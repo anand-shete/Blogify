@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+        <title>
+            <%= blog.title %>
+        </title>
+</head>
+<style>
+    .personal {
+        display: flex;
+    }
+
+    #pre {
+        position: relative;
+        left: 70px;
+        bottom: 23px;
+    }
+
+    h6 {
+        padding: 0 15px;
+    }
+</style>
+
+<body>
+    <%- include('./partials/navbar') %>
+
+        <div class="container mt-4">
+            <h1>
+                <%=blog.title%>
+            </h1>
+            <img src="<%= blog.coverImageURL %>" alt="BlogPost Image" width="700px">
+            <pre class="mt-4"> <%= blog.body %> </pre>
+        </div>
+        <div class="container mt-4 mb-5">
+            <img src="<%= blog.createdBy.profileImageURL %>" height="50px">
+            <%= blog.createdBy.fullName %>
+        </div>
+
+        <!-- Comments starts from here -->
+        <% if (locals.user) { %>
+            <div class="container mt-3">
+                <h1>Comments <%= comment.length %>
+                </h1>
+
+                <!-- The res.locals is an object that contains the local variables for the response which are scoped to the request only and therefore just available for the views rendered during that request or response cycle -->
+                <form action="/blog/comment/<%=blog.id%>" method="post">
+                    <div class="mb-3">
+                        <input name="content" type="text" class="form-control" placeholder="Enter your comment">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-5">Add Comment</button>
+                </form>
+            </div>
+            <% } %>
+
+                <% comment.forEach(comment=> { %>
+                    <div class="container ">
+                        <div class="personal">
+                            <img src="<%= blog.createdBy.profileImageURL %>" height="50px">
+                            <h6><%= comment.createdBy.fullName %></h6>
+                        </div>
+                        <pre id="pre"><%= comment.content %></pre>
+                    </div>
+                    <% }) %>
+                        <%- include('./partials/script') %>
+</body>
+
+</html>
