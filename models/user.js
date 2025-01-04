@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const { createHmac, randomBytes } = require('crypto');
+const bcrypt = require('bcrypt')
 const { createTokenForUser } = require('../services/auth');
 
 const userSchema = new mongoose.Schema({
-    fullName: {
+    name: {
         type: String,
         required: true
     },
@@ -21,7 +22,7 @@ const userSchema = new mongoose.Schema({
     },
     profileImageURL: {
         type: String,
-        default: "/images/default.jpg"
+        default: "https://anandshete-blogify.s3.ap-south-1.amazonaws.com/defaults/default-profile-pic.png"
     },
     role: {
         type: String,
@@ -29,38 +30,21 @@ const userSchema = new mongoose.Schema({
         default: 'user'
     }
 },
-    {
-        timestamps: true
-    }
+    { timestamps: true }
 );
-userSchema.pre('save', function (next) {
-    const user = this;
-    if (!user.isModified('password')) return;
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return;
 
-    const salt = randomBytes(16).toString();
-    const hashedPassword = createHmac('sha256', salt).update(user.password).digest("hex"); //create hashedPassword for users
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = bcrypt.hashSync(this.password, salt);
     this.salt = salt;
     this.password = hashedPassword;
     next();
 })
 //salt + UserPassword => Hashing Algorithm sha256=> Hashed
-userSchema.static("matchPasswordAndGenerateToken", async function (email, password) {
-    const user = await this.findOne({ email });
-    if (!user) throw new Error("User Not Found");
-
-    const salt = user.salt;
-    const hashedPassword = user.password;
-
-    const providedPassword = createHmac('sha256', salt)  //create hashedPassword for users
-        .update(password)
-        .digest("hex");
-
-    if (hashedPassword !== providedPassword)
-        throw new Error("Incorrect Password")
-
-    const token = createTokenForUser(user)
-    return token;
-})
+userSchema.methods.comparePassword = async function (password) {    // This method can be called on any User instance
+    return await bcrypt.compare(password, this.password)
+}
 const User = mongoose.model('user', userSchema);
 
 module.exports = User;

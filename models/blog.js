@@ -11,9 +11,8 @@ const blogSchema = new mongoose.Schema({
     },
     coverImageURL: {
         type: String,
-        required: false
+        default:"https://anandshete-blogify.s3.ap-south-1.amazonaws.com/defaults/default-blog-image.webp"
     },
-    
     createdBy: {
         type: mongoose.Schema.Types.ObjectId ,
         ref: 'user',        //this refers to 'user' collection in mongodb

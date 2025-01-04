@@ -2,33 +2,40 @@
 <html lang="en">
 
 <head>
-    <%- include('./partials/head') %>
+    <%- include('./common/head') %>
         <title>Sign Up</title>
 </head>
 
 <body>
-    <%- include('./partials/navbar') %>
+    <%- include('./common/navbar') %>
         <div class="container mt-4">
-            <form action="/user/signup" method="post">
+            <h3 class="mb-5">Sign Up</h3>
+            <form action="/user/signup" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
-                    <label for="fullName" class="form-label">Full Name</label>
-                    <input name="fullName" type="text" class="form-control" id="fullName" aria-describedby="fullName">
+                    <label for="profileImageURL" class="form-label">Profile Picture</label>
+                    <input name="profileImageURL" type="file" class="form-control" id="profileImageURL"
+                        aria-describedby="profileImageURL">
                 </div>
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Email address</label>
-                    <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input name="name" type="text" class="form-control" id="name" aria-describedby="name">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input name="email" type="email" class="form-control" id="email"
+                        aria-describedby="emailHelp">
                     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                 </div>
                 <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+                    <label for="password" class="form-label">Password</label>
+                    <input name="password" type="password" class="form-control" id="password">
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-success">Submit</button>
             </form>
         </div>
 
 
-        <%- include('./partials/script') %>
+        <%- include('./common/script') %>
 </body>
 
 </html>
