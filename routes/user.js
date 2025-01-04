@@ -42,7 +42,7 @@ router.post('/signup', upload.single('profileImageURL'), async (req, res) => {
         name, email, password,
         profileImageURL: req.file?.location
     })
-    // console.log(req.file);
+    console.log(req.file);
     return res.redirect('/user/signin')
 })
 
@@ -58,7 +58,7 @@ router.post('/signin', async (req, res) => {
         if (!isValid) throw error;
 
         const token = createTokenForUser(user)
-        return res.cookie("token", token).redirect('/blog/add-new');
+        return res.cookie("token", token).redirect('/');
     } catch (error) {
         return res.render('signin', {
             error: 'Incorrect Email or Password'
