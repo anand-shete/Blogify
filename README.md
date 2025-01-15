@@ -25,7 +25,7 @@ cd blogify
 npm install
 ```
 
-3.Set up environment variables: Replace the .env.example file and add your variables in it
+3. Set up environment variables: Replace the .env.example file and add your variables in it
 
 4. Start the server
 ```
