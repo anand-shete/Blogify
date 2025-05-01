@@ -2,7 +2,7 @@ import api from "@/api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Loader } from "@/components";
+import { Loader } from "@/components/common";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, NavLink } from "react-router";
@@ -28,8 +28,8 @@ export default function Blog() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { blogId } = useParams();
-  const user = useSelector((user) => user.user);
-  const blogs = useSelector(blogs=> blogs.blogs)
+  const user = useSelector(user => user.user);
+  const blogs = useSelector(blogs => blogs.blogs);
   const [blog, setBlog] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +39,7 @@ export default function Blog() {
       content: "",
     },
   });
-console.log(blogs);
+  console.log(blogs);
 
   useEffect(() => {
     (async () => {
@@ -49,12 +49,12 @@ console.log(blogs);
         setLoading(false);
       } catch (error) {
         toast.error(error.response.data.message);
-        navigate("/user/home");
+        navigate("/home");
       }
     })();
   }, []);
 
-  const submit = async (data) => {
+  const submit = async data => {
     try {
       const res = await api.post(`/blog/add-comment/${blog._id}`, data);
       toast.success(res.data.message);
@@ -64,7 +64,7 @@ console.log(blogs);
     }
   };
   return (
-    <div className="min-h-screen max-w-screen my-20 flex flex-col items-center">
+    <div className="max-w-screen my-20 flex min-h-screen flex-col items-center">
       {loading ? (
         <Loader />
       ) : (
@@ -72,20 +72,16 @@ console.log(blogs);
           <img
             src={blog.coverImageURL}
             alt="coverImageURL"
-            className="lg:max-w-[50vw] rounded-md mb-10"
+            className="mb-10 rounded-md lg:max-w-[50vw]"
           />
           <div dangerouslySetInnerHTML={{ __html: blog.content }} />
         </>
       )}
 
-      <h1 className="text-2xl mt-30">Comments</h1>
-
+      <h1 className="mt-30 text-2xl">Comments</h1>
 
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(submit)}
-          className="flex flex-col space-y-5 my-10"
-        >
+        <form onSubmit={form.handleSubmit(submit)} className="my-10 flex flex-col space-y-5">
           <FormField
             control={form.control}
             name="content"

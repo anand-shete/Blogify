@@ -6,6 +6,8 @@ const UserRoute = require("./routes/user");
 const BlogRoute = require("./routes/blog");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -23,10 +25,29 @@ const PORT = Number(process.env.PORT) || 3000;
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   app.use(cookieParser());
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      },
+      (accessToken, refreshToken, profile, done) => {
+        // generally, we store the user profile in our database
+        return done(null, profile);
+      }
+    )
+  );
 
-  app.use("/api", baseRoute);
-  app.use("/api/user", UserRoute);
-  app.use("/api/blog", BlogRoute);
+  // passport.serializeUser((user, done) => done(null, user));
+  // passport.deserializeUser((user, done) => done(null, user));
+
+  app.get("/", async (req, res) => {
+    return res.status(200).json({ message: "API Health check passed" });
+  });
+  app.use("/api/v1", baseRoute);
+  app.use("/api/v1/user", UserRoute);
+  app.use("/api/v1/blog", BlogRoute);
 
   try {
     app.listen(PORT, () => console.log(`🚀 Server started on PORT:${PORT}`));

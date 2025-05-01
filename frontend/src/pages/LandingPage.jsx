@@ -1,11 +1,13 @@
 import { Toaster } from "@/components/ui/sonner";
-import { Footer, Navbar, Blogs } from "../components";
+import { Footer, Navbar } from "@/components/common";
+import { BlogsSection, HeroSection } from "@/sections";
 
 export default function Home() {
   return (
     <>
       <Navbar />
-      <Blogs />
+      <HeroSection />
+      <BlogsSection />
       <Toaster />
       <Footer />
     </>

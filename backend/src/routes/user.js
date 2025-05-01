@@ -1,78 +1,49 @@
 const { Router } = require("express");
-const User = require("../models/user");
 const router = Router();
-const multer = require("multer");
-const multerS3 = require("multer-s3");
+const User = require("../models/user");
 const { generateUserToken, validateToken } = require("../services/auth");
-const { s3Client } = require("../config/aws");
-const { verify } = require("jsonwebtoken");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const passport = require("passport");
+const { putObjectForProfile } = require("../config/aws");
 
-// only multer can parse the incoming multipart/form-data
-const profileImageUpload = multer({
-  storage: multerS3({
-    s3: s3Client,
-    bucket: process.env.BUCKET_NAME,
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-    metadata: (req, file, cb) => {
-      cb(null, { fieldName: file.fieldname });
-    },
-    key: (req, file, cb) => {
-      const filename = `uploads/users/${Date.now()}-${file.originalname}`;
-      cb(null, filename);
-    },
-  }),
+router.post("/check", async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.countDocuments({ email }).lean();
+  if (user) return res.status(200).json(true);
+
+  return res.status(200).json(false);
 });
 
-router.get("/", (req, res) => {
-  return res.status(200).json({ message: "User Route health check passed" });
-});
-
-router.get("/simple-auth", async (req, res) => {
-  const token = req.cookies?.["token"];
-  if (!token) return res.status(200).end();
-
-  const user = validateToken(token);
-  if (user) return res.status(200).json(user);
-});
-
-router.get("/check-auth", async (req, res) => {
+router.get("/generateSignedUrl", async (req, res) => {
   try {
-    const token = req.cookies?.["token"];
-    if (!token) return res.status(404).json({ message: "Login First" });
+    const url = await putObjectForProfile();
+    if (!url) return res.status(500).json({ message: "Error generating Signed URL" });
+    return res.status(201).json({ message: "Generated Pre-signed URL", url });
+  } catch (error) {
+    return res.status(500).json({ message: "Error generating Signed URL" });
+  }
+});
+router.post("/signup", async (req, res) => {
+  try {
+    const { name, email, password, profileImageURL } = req.body;
 
-    const user = validateToken(token);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are requried" });
+    }
 
-    return res.status(200).json(user);
+    const check = await User.countDocuments({ email }).lean();
+    if (check) {
+      return res.status(409).json({ message: "Account already exists" });
+    }
+
+    await User.create({ name, email, password, profileImageURL });
+    return res.status(201).json({ message: "Account created succcessfully" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Error Authenticating User" });
+    return res.status(500).json({ message: "Error creating Account" });
   }
 });
-
-router.post(
-  "/signup",
-  profileImageUpload.single("profileImageURL"),
-  async (req, res) => {
-    try {
-      const { name, email, password } = req.body;
-      if (!name || !email || !password) {
-        return res.status(400).json({ message: "All fields are requried" });
-      }
-
-      const check = await User.countDocuments({ email }).lean();
-      if (check) {
-        return res.status(409).json({ message: "Account already exists" });
-      }
-
-      await User.create({ name, email, password });
-      return res.status(201).json({ message: "Account created succcessfully" });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: "Error creating Account" });
-    }
-  }
-);
 
 router.post("/signin", async (req, res) => {
   try {
@@ -124,5 +95,35 @@ router.post("/signin", async (req, res) => {
 router.get("/logout", (req, res) => {
   return res.status(200).clearCookie("token").end();
 });
+
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get("/auth/status", async (req, res) => {
+  try {
+    const token = req.cookies?.["token"];
+    if (!token) return res.status(401).json({ message: "Login First" });
+
+    const user = validateToken(token);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Error Authenticating User" });
+  }
+});
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { session: false, failureRedirect: process.env.FRONTEND_URL }),
+  (req, res) => {
+    try {
+      console.log("user", req.user);
+    } catch (error) {
+      console.log("error", error);
+      return res.status(500).json({ message: "User Login failed" });
+    }
+  }
+);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 import api from "@/api";
-import { Loader } from "@/components";
+import { Loader } from "@/components/common";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
@@ -18,10 +18,10 @@ export default function Logout() {
       } catch (error) {}
     })();
   }, []);
-  
+
   return (
-    <div className="min-h-[80vh] max-w-screen flex flex-col justify-center items-center ">
-      <h1 className="text-2xl lg:text-5xl mb-15">Please Wait</h1>
+    <div className="max-w-screen flex min-h-[80vh] flex-col items-center justify-center">
+      <h1 className="mb-15 text-2xl lg:text-5xl">Please Wait</h1>
       <Loader />
     </div>
   );

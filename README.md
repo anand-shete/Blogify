@@ -8,7 +8,7 @@ If you directly want to view this project:
 ## Tech Stack
 - Libraries: Node.js with Express, EJS, 
 - Database: MongoDB Atlas
-- Tools: bcrypt, JWT, multer-s3, mongoose, Bootstrap
+- Tools: bcrypt, JWT, AWS SDK, mongoose, Bootstrap
 - Services: AWS S3
 
 

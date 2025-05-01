@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { clearAllBlogs, setAllBlogs } from "@/features/blogSlice";
 import { Button } from "@/components/ui/button";
-import { Loader } from "@/components";
+import { Loader } from "@/components/common";
 
 export default function UserHome() {
   const user = useSelector((user) => user.user);
@@ -21,17 +21,17 @@ export default function UserHome() {
       dispatch(clearAllBlogs());
       try {
         if (!user._id) {
-          const res = await api.get("/user/check-auth");
+          const res = await api.get("/user/auth/status");
           dispatch(setUser(res.data));
         }
       } catch (error) {
         toast.error(error.response.data.message);
-        navigate("/user/login");
+        navigate("/login");
       }
 
       try {
         if (user._id) {
-          const res = await api.get(`/blog/all-blogs/${user._id}`);
+          const res = await api.get(`/blog/blogs/${user._id}`);
           dispatch(setAllBlogs(res.data));
         }
       } catch (error) {
@@ -65,7 +65,7 @@ export default function UserHome() {
                 <CardFooter>
                   <Button
                     className="mx-auto"
-                    onClick={() => navigate(`/user/${blog._id}`)}
+                    onClick={() => navigate(`/${blog._id}`)}
                   >
                     View
                   </Button>

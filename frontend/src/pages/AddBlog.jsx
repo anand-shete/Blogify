@@ -26,7 +26,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/features/userSlice";
 import { Editor } from "@tinymce/tinymce-react";
-import { Loader } from "@/components";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Blog Title required" }),
@@ -49,10 +48,10 @@ export default function AddBlog() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get("/user/check-auth");
+        const res = await api.get("/user/auth/status");
         dispatch(setUser(res.data));
       } catch (error) {
-        navigate("/user/login");
+        navigate("/login");
       }
     })();
   }, []);
@@ -75,8 +74,8 @@ export default function AddBlog() {
       if (data.blogCoverImage)
         formData.append("blogCoverImage", data.blogCoverImage[0]);
 
-      const res = await api.post("/blog/add-blog", formData);
-      navigate("/user/home");
+      const res = await api.post("/blog/blog/add", formData);
+      navigate("/home");
       toast.success(res.data.message);
     } catch (error) {
       console.log(error);

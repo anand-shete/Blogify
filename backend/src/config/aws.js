@@ -1,11 +1,28 @@
-const { S3Client } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
-const s3Client = new S3Client({
-  region: "ap-south-1",
+const client = new S3Client({
+  region: process.env.REGION,
   credentials: {
     accessKeyId: process.env.ACCESS_KEY,
     secretAccessKey: process.env.SECRET_ACCESS_KEY,
   },
 });
 
-module.exports = { s3Client };
+const putObjectForProfile = async () => {
+  const command = new PutObjectCommand({
+    Bucket: "anandshete-blogify",
+    Key: `users/profile/${Math.random()}`,
+  });
+  return await getSignedUrl(client, command);
+};
+
+const putObjectForBlog = async (userId, filename) => {
+  const command = new PutObjectCommand({
+    Bucket: "anandshete-blogify",
+    Key: `users/${userId}/blogs/${filename}`,
+  });
+  return await getSignedUrl(client, command);
+};
+
+module.exports = { putObjectForProfile, putObjectForBlog };

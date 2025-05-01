@@ -18,8 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     profileImageURL: {
       type: String,
-      default:
-        "https://anandshete-blogify.s3.ap-south-1.amazonaws.com/defaults/profile-pic.png",
+      default: "https://anandshete-blogify.s3.ap-south-1.amazonaws.com/default/profile-pic.png",
     },
     role: {
       type: String,
@@ -29,6 +28,7 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return;
 
@@ -38,7 +38,7 @@ userSchema.pre("save", async function (next) {
   this.password = hashedPassword;
   next();
 });
-//salt + UserPassword => Hashing Algorithm sha256=> Hashed
+
 userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
