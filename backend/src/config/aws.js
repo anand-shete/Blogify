@@ -17,10 +17,10 @@ const putObjectForProfile = async () => {
   return await getSignedUrl(client, command);
 };
 
-const putObjectForBlog = async (userId, filename) => {
+const putObjectForBlog = async () => {
   const command = new PutObjectCommand({
     Bucket: "anandshete-blogify",
-    Key: `users/${userId}/blogs/${filename}`,
+    Key: `users/blogs/${Math.random()}`,
   });
   return await getSignedUrl(client, command);
 };

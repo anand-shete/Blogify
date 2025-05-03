@@ -5,6 +5,7 @@ const { generateUserToken, validateToken } = require("../services/auth");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const passport = require("passport");
 const { putObjectForProfile } = require("../config/aws");
+const { setJWT } = require("../utils/setJWT");
 
 router.post("/check", async (req, res) => {
   const { email } = req.body;
@@ -24,6 +25,7 @@ router.get("/generateSignedUrl", async (req, res) => {
     return res.status(500).json({ message: "Error generating Signed URL" });
   }
 });
+
 router.post("/signup", async (req, res) => {
   try {
     const { name, email, password, profileImageURL } = req.body;
@@ -55,6 +57,7 @@ router.post("/signin", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "Account not found" });
 
+    if (user.authProvider === "google") return res.status(403);
     const isValid = await user.comparePassword(password);
     if (!isValid) {
       return res.status(403).json({ message: "Incorrect password" });
@@ -75,7 +78,7 @@ router.post("/signin", async (req, res) => {
           path: "/",
           sameSite: "lax",
         })
-        .json({ message: "User Sign In succcess" });
+        .json({ message: "User Login succcess" });
     } else {
       return res
         .status(200)
@@ -84,7 +87,7 @@ router.post("/signin", async (req, res) => {
           maxAge: 1000 * 60 * 60,
           path: "/",
         })
-        .json({ message: "User Sign In success" });
+        .json({ message: "User Login success" });
     }
   } catch (error) {
     console.log(error);
@@ -95,8 +98,6 @@ router.post("/signin", async (req, res) => {
 router.get("/logout", (req, res) => {
   return res.status(200).clearCookie("token").end();
 });
-
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 router.get("/auth/status", async (req, res) => {
   try {
@@ -113,15 +114,39 @@ router.get("/auth/status", async (req, res) => {
   }
 });
 
+router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
 router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { session: false, failureRedirect: process.env.FRONTEND_URL }),
-  (req, res) => {
+  "/auth/google/callback/",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: `${process.env.FRONTEND_URL}/user/signup`,
+  }),
+  async (req, res) => {
+    console.log("req", req);
+
     try {
-      console.log("user", req.user);
+      const { name, email, picture } = req.user._json;
+
+      const user = await User.countDocuments({ email });
+      const token = generateUserToken({ name, email, profileImageURL: picture, role: "user" });
+      // If first time login, create User and store in database
+      if (!user) {
+        await User.create({
+          name,
+          email,
+          profileImageURL: picture,
+          authProvider: google,
+        });
+        await setJWT(res, token);
+        return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
+      }
+      // else set cookie and normal Login
+      await setJWT(res, token);
+      return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
     } catch (error) {
       console.log("error", error);
-      return res.status(500).json({ message: "User Login failed" });
+      return res.redirect(`${process.env.FRONTEND_URL}/user/login?error`);
     }
   }
 );

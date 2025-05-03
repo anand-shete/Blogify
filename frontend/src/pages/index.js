@@ -1,9 +1,10 @@
-import Home from "./LandingPage";
+import LandingPage from "./LandingPage";
 import Signup from "./Signup";
 import Login from "./Login";
-import UserHome from "./UserHome";
+import Dashboard from "./Dashboard";
 import Logout from "./Logout";
 import AddBlog from "./AddBlog";
 import Blog from "./Blog";
+import UserLayout from "./UserLayout";
 
-export { Home, Signup, Login, UserHome, Logout, AddBlog, Blog };
+export { LandingPage, Signup, Login, Dashboard, Logout, AddBlog, Blog, UserLayout };

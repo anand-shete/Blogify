@@ -32,15 +32,9 @@ const PORT = Number(process.env.PORT) || 3000;
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_CALLBACK_URL,
       },
-      (accessToken, refreshToken, profile, done) => {
-        // generally, we store the user profile in our database
-        return done(null, profile);
-      }
+      (accessToken, refreshToken, profile, done) => done(null, profile)
     )
   );
-
-  // passport.serializeUser((user, done) => done(null, user));
-  // passport.deserializeUser((user, done) => done(null, user));
 
   app.get("/", async (req, res) => {
     return res.status(200).json({ message: "API Health check passed" });

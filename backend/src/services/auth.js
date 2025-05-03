@@ -1,19 +1,18 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const secret = process.env.JWT_SECRET_KEY;
 
-const generateUserToken = (user) => {
-    const payload = {
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-        profileImageURL: user.profileImageURL,
-        role: user.role,
-    }
-    return jwt.sign(payload, secret);
-}
+const generateUserToken = user => {
+  const payload = {
+    name: user.name,
+    email: user.email,
+    profileImageURL: user.profileImageURL,
+    role: user.role,
+  };
+  return jwt.sign(payload, secret);
+};
 
-const validateToken = (token) => {
-    return jwt.verify(token, secret);
-}
+const validateToken = token => {
+  return jwt.verify(token, secret);
+};
 
-module.exports = { generateUserToken, validateToken }
+module.exports = { generateUserToken, validateToken };

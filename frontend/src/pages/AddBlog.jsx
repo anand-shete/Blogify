@@ -3,13 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Form,
   FormControl,
   FormDescription,
@@ -19,84 +12,75 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { NavLink, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import api from "@/api";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "@/features/userSlice";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
+import { Loader } from "@/components/common";
+import { useSetUser } from "@/hooks/useSetUser";
+import axios from "axios";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Blog Title required" }),
   content: z.string().min(1, { message: "Content cannot be empty" }),
   blogCoverImage: z
     .instanceof(FileList)
-    .refine(
-      (files) => !files || files[0].type.startsWith("image"),
-      "File must be an image"
-    )
+    .refine(files => !files || files[0].type.startsWith("image"), "File must be an image")
     .optional(),
 });
 
 export default function AddBlog() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((user) => user.user);
+  const user = useSelector(user => user.user);
   const [loading, setloading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await api.get("/user/auth/status");
-        dispatch(setUser(res.data));
-      } catch (error) {
-        navigate("/login");
-      }
-    })();
-  }, []);
+  useSetUser();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       content: "",
-      blogCoverImage: undefined, // FileList can't have a default ""
+      blogCoverImage: undefined,
     },
   });
 
-  const submit = async (data) => {
+  const submit = async data => {
     try {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("content", data.content);
-      formData.append("userId", user._id);
-      if (data.blogCoverImage)
-        formData.append("blogCoverImage", data.blogCoverImage[0]);
+      const file = data?.blogCoverImage?.[0];
+      let coverImageURL;
 
-      const res = await api.post("/blog/blog/add", formData);
-      navigate("/home");
+      if (file) {
+        const res = await api.get("/blog/generateSignedUrl");
+        const url = res.data.url;
+
+        await axios.put(url, file, {
+          headers: { "Content-Type": file.type },
+        });
+        coverImageURL = url.split("?")[0];
+      }
+      const res = await api.post("/blog/blog/add", { ...data, coverImageURL, email: user.email });
+      navigate("/user/dashboard");
       toast.success(res.data.message);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
     }
   };
 
   return (
-    <div className="min-h-screen max-w-screen m-10 sm:m-20">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(submit)}
-          className="flex flex-col space-y-10"
-        >
+    <div className="m-10 flex min-h-screen max-w-screen flex-col sm:m-20">
+      <Button className="mb-5 w-fit self-end hover:scale-110">Add Blog</Button>
+      <Form {...form} className="">
+        <form onSubmit={form.handleSubmit(submit)} className="flex flex-col space-y-10">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1">Title</FormLabel>
+                <FormLabel className="ml-1 text-2xl">Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Blog Title" type="text" {...field} />
+                  <Input placeholder="Blog Title" type="text" {...field} className="p-3" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -106,14 +90,15 @@ export default function AddBlog() {
           {/* Blog Cover image  */}
           <FormField
             control={form.control}
-            name="blogCoverImage" // must be same in backend
+            name="blogCoverImage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1">Cover Image</FormLabel>
+                <FormLabel className="ml-1 text-2xl">Cover Image (optional)</FormLabel>
                 <FormControl>
                   <Input
                     type="file"
-                    onChange={(e) => field.onChange(e.target.files)}
+                    onChange={e => field.onChange(e.target.files)}
+                    className="cursor-pointer file:mt-1 file:mr-5"
                   />
                 </FormControl>
                 <FormMessage />
@@ -127,7 +112,7 @@ export default function AddBlog() {
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1">Content</FormLabel>
+                <FormLabel className="ml-1 text-2xl">Text Editor</FormLabel>
                 <FormControl>
                   <Editor
                     apiKey={import.meta.env.VITE_TINYMCE_API_KEY}

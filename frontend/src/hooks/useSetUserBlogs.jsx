@@ -1,29 +1,26 @@
+import { setAllBlogs } from "@/features/blogSlice";
 import api from "@/api";
-import { setUser } from "@/features/userSlice";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
-import { toast } from "sonner";
 
-export const useSetUser = () => {
+export const useSetUserBlogs = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const user = useSelector(user => user.user);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get("/user/auth/status");
-        dispatch(setUser(res.data));
+        const res = await api.get(`/blog/getBlogs/${user.email}`);
+        dispatch(setAllBlogs(res.data));
       } catch (error) {
-        toast.error(error.response.data.message);
-        navigate("/user/login");
+        console.log("error", error);
+        console.log("axios error", error.response.data);
       } finally {
         setLoading(false);
       }
     };
-    if (!user.name) fetchData();
-  }, [user, dispatch]);
+    if (user.name) fetchData();
+  }, [dispatch, user]);
   return loading;
 };

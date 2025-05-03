@@ -11,9 +11,9 @@ const blogSlice = createSlice({
       });
     },
     clearAllBlogs: (state, action) => {
-      console.log("dtate", JSON.stringify(state, null, 2));
+      // console.log("dtate", JSON.stringify(state, null, 2));
       state = [];
-      console.log("dtate", JSON.stringify(state, null, 2));
+      // console.log("dtate", JSON.stringify(state, null, 2));s
     },
     setComments: (state, action) => {
       console.log(JSON.stringify(action.payload, null, 2));

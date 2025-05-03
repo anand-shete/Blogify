@@ -14,11 +14,16 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
     },
     profileImageURL: {
       type: String,
       default: "https://anandshete-blogify.s3.ap-south-1.amazonaws.com/default/profile-pic.png",
+    },
+    authProvider: {
+      type: String,
+      required: true,
+      enum: ["local", "google"],
+      default: "local",
     },
     role: {
       type: String,

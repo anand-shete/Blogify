@@ -9,7 +9,7 @@ export default function Navbar() {
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-3 flex min-h-20 max-w-screen items-center justify-around border-b-1 border-black bg-white">
+    <nav className="sticky top-0 z-3 flex min-h-20 max-w-screen items-center justify-around border-b-1 border-black bg-white shadow-2xl">
       <NavbarLogo />
       <NavbarBurgerMenu
         isBurgerOpen={isBurgerOpen}

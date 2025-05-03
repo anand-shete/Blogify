@@ -3,11 +3,23 @@ const router = express.Router();
 const User = require("../models/user");
 const Blog = require("../models/blog");
 const sanitizeHtml = require("sanitize-html");
+const { putObjectForBlog } = require("../config/aws");
+
+router.get("/generateSignedUrl", async (req, res) => {
+  try {
+    const url = await putObjectForBlog();
+    if (!url) return res.status(500).json({ message: "Error generating Signed URL" });
+
+    return res.status(201).json({ message: "Generated Pre-signed URL", url });
+  } catch (error) {
+    return res.status(500).json({ message: "Error generating Signed URL" });
+  }
+});
 
 router.post("/blog/add", async (req, res) => {
   try {
-    const { title, content, userId } = req.body;
-    if (!title || !content || !userId)
+    const { title, content, email, coverImageURL } = req.body;
+    if (!title || !content || !email)
       return res.status(400).json({ message: "All fields are required" });
 
     const sanitizedContent = sanitizeHtml(content, {
@@ -15,11 +27,14 @@ router.post("/blog/add", async (req, res) => {
       allowedAttributes: { "*": ["style"], a: ["href"], img: ["src"] },
     });
 
+    const { _id } = await User.findOne({ email }).select("_id").lean();
+    if (!_id) return res.status(404).json({ message: "User doesn't exists" });
+
     await Blog.create({
       title,
       content: sanitizedContent,
-      createdBy: userId,
-      coverImageURL: req.file?.location,
+      createdBy: _id,
+      coverImageURL,
     });
     return res.status(201).json({ message: "Blog Added successfully" });
   } catch (error) {
@@ -38,27 +53,27 @@ router.post("/improve-text", async (req, res) => {
 
     const result = await model.generateContent(`Paraphrase this text:${text}`);
     console.log(result);
-    // return result.response.text();
-    // return res.status(200).json({ result });
+    return result.response.text();
+    return res.status(200).json({ result });
   } catch (error) {
     console.error("Error:", error);
     return res.status(500).json({ error: "Failed to improve text using AI" });
   }
 });
 
-router.get("/blogs/:userId", async (req, res) => {
+router.get("/getBlogs/:email", async (req, res) => {
   try {
-    const userId = req.params?.userId;
-    if (!userId) return res.status(404).json({ message: "User not found" });
+    const email = req.params?.email;
+    if (!email) return res.status(404).json({ message: "Params not received" });
 
-    const user = await User.findOne({ _id: userId }).lean();
+    const user = await User.findOne({ email }).lean();
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const blogs = await Blog.find({ createdBy: userId }).sort({ createdAt: 1 }).lean();
-
+    const blogs = await Blog.find({ createdBy: user._id }).sort({ createdAt: 1 }).lean();
     return res.status(200).json(blogs);
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: "Error getting blogs for user" });
   }
 });
 
