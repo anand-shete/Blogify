@@ -1,108 +1,165 @@
 import api from "@/api";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { Loader } from "@/components/common";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, NavLink } from "react-router";
 import { toast } from "sonner";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { setComments } from "@/features/blogSlice";
-
-const formSchema = z.object({
-  content: z.string().min(1, { message: "Content cannot be empty" }),
-});
+import { addComment } from "@/features/blogSlice";
+import { setBlog } from "@/features/blogSlice";
+import { NavLink, useParams } from "react-router";
+import { setUser } from "@/features/userSlice";
+import { Label } from "@/components/ui/label";
+import { Send } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function Blog() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { blogId } = useParams();
-  const user = useSelector(user => user.user);
-  const blogs = useSelector(blogs => blogs.blogs);
-  const [blog, setBlog] = useState({});
+  const user = useSelector(state => state.user);
+  const blog = useSelector(state => state.blogs[0]);
   const [loading, setLoading] = useState(true);
-
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      content: "",
-    },
-  });
-  console.log(blogs);
+  const [comment, setComment] = useState(null);
 
   useEffect(() => {
     (async () => {
       try {
         const res = await api.get(`/blog/${blogId}`);
         setBlog(res.data.blog);
-        setLoading(false);
+        dispatch(setBlog(res.data.blog));
       } catch (error) {
         toast.error(error.response.data.message);
-        navigate("/home");
+      } finally {
+        setLoading(false);
       }
     })();
-  }, []);
 
-  const submit = async data => {
+    // Set user, only if client has token
+    (async () => {
+      try {
+        const res = await api.get("/user/auth/status");
+        dispatch(setUser(res.data));
+      } catch (error) {}
+    })();
+  }, [dispatch, user]);
+
+  const postComment = async e => {
     try {
-      const res = await api.post(`/blog/add-comment/${blog._id}`, data);
+      e.preventDefault();
+
+      const res = await api.post(`blog/comment/add/${blog._id}`, {
+        content: comment,
+        createdBy: user._id,
+      });
       toast.success(res.data.message);
-      dispatch(setComments(res.data.commentArr));
+      dispatch(addComment(res.data.comments));
+      setComment("");
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
+
   return (
-    <div className="max-w-screen my-20 flex min-h-screen flex-col items-center">
+    <div className="max-w-screen">
       {loading ? (
-        <Loader />
+        <div className="flex min-h-screen items-center">
+          <Loader />
+        </div>
       ) : (
-        <>
+        <div className="mx-auto mt-10 flex w-[80vw] flex-col">
+          <motion.h1
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="mt-10 text-center text-2xl sm:text-5xl"
+          >
+            {blog.title}
+          </motion.h1>
           <img
             src={blog.coverImageURL}
             alt="coverImageURL"
-            className="mb-10 rounded-md lg:max-w-[50vw]"
+            className="m-10 mx-auto inline-block rounded-md sm:max-w-[50vw]"
           />
-          <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-        </>
-      )}
+          <div
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+            className="mb-5 first-letter:float-left first-letter:mr-2 first-letter:text-6xl first-letter:font-bold first-letter:capitalize"
+          />
+          <div className="mb-5 flex items-center justify-center space-x-5">
+            <img
+              src={blog.createdBy.profileImageURL}
+              className="h-20 rounded-full border-2 border-black"
+              alt="user"
+            />
+            <div className="flex flex-col">
+              <h1>Written By</h1>
+              <h1 className="text-xl font-semibold">{blog.createdBy.name}</h1>
+            </div>
+          </div>
+          <p className="border-1" />
 
-      <h1 className="mt-30 text-2xl">Comments</h1>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(submit)} className="my-10 flex flex-col space-y-5">
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="ml-1">{user.name}</FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-[full]"
-                    placeholder="What do u feel?"
-                    type="text"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+          {/* Comments Sectiom */}
+          <div className="my-20 flex flex-col">
+            <h1 className="pl-2 text-2xl font-semibold">
+              {blog.comments.length} Comments
+            </h1>
+            {user._id ? (
+              <div className="flex items-center space-x-3 py-5 md:py-10">
+                <img
+                  src={user.profileImageURL}
+                  className="h-12 w-12 rounded-full border border-black"
+                />
+                <form
+                  className="flex items-center space-x-5"
+                  onSubmit={postComment}
+                >
+                  <div className="flex flex-col">
+                    <Label className="pb-1 pl-1 font-semibold">
+                      {user.name}
+                    </Label>
+                    <Input
+                      placeholder="What do you think?"
+                      name="comment"
+                      type="text"
+                      required
+                      autoComplete="on"
+                      value={comment || ""}
+                      onChange={e => setComment(e.target.value)}
+                      className="sm:w-sm md:w-md lg:min-w-xl"
+                    />
+                  </div>
+                  <Button type="submit" className="relative top-2">
+                    <Send className="" />
+                    <span className="hidden sm:inline">Post</span>
+                  </Button>
+                </form>
+              </div>
+            ) : (
+              <div className="my-3 rounded-2xl p-4 shadow-2xl">
+                Please{" "}
+                <NavLink
+                  to="/user/login"
+                  className="underline underline-offset-1"
+                >
+                  Login
+                </NavLink>{" "}
+                to Add Comments
+              </div>
             )}
-          />
-          <Button type="submit">Comment</Button>
-        </form>
-      </Form>
+            {blog.comments.map((comment, index) => (
+              <div key={index} className="flex space-x-3 py-4">
+                <img
+                  src={comment.createdBy.profileImageURL}
+                  alt="profile"
+                  className="h-12 rounded-full border border-black"
+                />
+                <div className="flex flex-col">
+                  <div className="font-semibold">{comment.createdBy.name}</div>
+                  <div>{comment.content}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

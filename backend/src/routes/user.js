@@ -57,7 +57,9 @@ router.post("/signin", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "Account not found" });
 
-    if (user.authProvider === "google") return res.status(403);
+    if (user.authProvider === "google")
+      return res.status(403).json({ message: "Login using Google" });
+
     const isValid = await user.comparePassword(password);
     if (!isValid) {
       return res.status(403).json({ message: "Incorrect password" });
@@ -96,7 +98,7 @@ router.post("/signin", async (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  return res.status(200).clearCookie("token").end();
+  return res.status(200).clearCookie("token").json({ message: "Logged out successfully" });
 });
 
 router.get("/auth/status", async (req, res) => {
@@ -123,25 +125,24 @@ router.get(
     failureRedirect: `${process.env.FRONTEND_URL}/user/signup`,
   }),
   async (req, res) => {
-    console.log("req", req);
-
     try {
       const { name, email, picture } = req.user._json;
 
-      const user = await User.countDocuments({ email });
-      const token = generateUserToken({ name, email, profileImageURL: picture, role: "user" });
+      const user = await User.findOne({ email }).lean();
       // If first time login, create User and store in database
       if (!user) {
-        await User.create({
+        const user = await User.create({
           name,
           email,
           profileImageURL: picture,
-          authProvider: google,
+          authProvider: "google",
         });
+        const token = generateUserToken(user);
         await setJWT(res, token);
         return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
       }
       // else set cookie and normal Login
+      const token = generateUserToken(user);
       await setJWT(res, token);
       return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
     } catch (error) {

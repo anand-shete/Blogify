@@ -53,7 +53,7 @@ export default function Login() {
 
   return (
     <div className="flex max-w-screen flex-col items-center justify-center bg-stone-200">
-      <Card className="mx-5 my-20 min-w-90 text-center shadow-2xl shadow-black">
+      <Card className="mx-5 my-20 px-5 text-center shadow-2xl shadow-black md:min-w-110">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>Enter your details below to Login</CardDescription>
@@ -98,7 +98,12 @@ export default function Login() {
                   Or continue with
                 </span>
               </div>
-              <Button variant="outline" className="w-full" onClick={Oauth} type="button">
+              <Button
+                variant="outline"
+                className="w-full border-black"
+                onClick={Oauth}
+                type="button"
+              >
                 <img src="/google.svg" alt="google Logo" className="h-4" />
                 Login with Google
               </Button>

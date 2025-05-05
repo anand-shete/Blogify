@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import api from "@/api";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
@@ -24,7 +24,8 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Loader } from "@/components/common";
 import axios from "axios";
 import { setUser } from "@/features/userSlice";
-import { Brain, CirclePlus } from "lucide-react";
+import { setBlog } from "@/features/blogSlice";
+import { Brain, Check } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -45,15 +46,29 @@ const formSchema = z.object({
     .optional(),
 });
 
-export default function AddBlog() {
+export default function EditBlog() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { blogId } = useParams();
   const user = useSelector(user => user.user);
   const [loading, setLoading] = useState(true);
   const [generate, setGenerate] = useState("");
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const [useAI, setUseAI] = useState(false);
+  const [blog, setBlog] = useState({
+    title: "",
+    content: "",
+  });
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+      blogCoverImage: undefined,
+    },
+  });
 
   useEffect(() => {
     (async () => {
@@ -65,30 +80,44 @@ export default function AddBlog() {
         navigate("/user/login");
       }
     })();
+    if (blogId)
+      (async () => {
+        try {
+          const res = await api.get(`/blog/${blogId}`);
+          setBlog({
+            content: res.data.blog.content,
+            title: res.data.blog.title,
+          });
+        } catch (error) {
+          toast.error(error.response.data.message);
+        }
+      })();
   }, []);
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      content: "",
-      blogCoverImage: undefined,
-    },
-  });
+  useEffect(() => {
+    if (blog.content && blog.title) {
+      form.reset({
+        content: blog.content,
+        title: blog.title,
+      });
+      setLoading(false);
+    }
+  }, [blog.content, blog.title]);
+
   const submit = async data => {
     try {
       const file = data?.blogCoverImage?.[0];
       let coverImageURL;
+
       if (file) {
         const res = await api.get("/blog/generateSignedUrl");
         const url = res.data.url;
-
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
         });
         coverImageURL = url.split("?")[0];
       }
-      const res = await api.post("/blog/add", {
+      const res = await api.post(`/blog/edit/${blogId}`, {
         ...data,
         coverImageURL,
         _id: user._id,
@@ -96,8 +125,6 @@ export default function AddBlog() {
       navigate("/user/dashboard");
       toast.success(res.data.message);
     } catch (error) {
-      console.log("error", error);
-
       toast.error(error.respose.data.message || "Some Error Occured");
     }
   };
@@ -134,8 +161,8 @@ export default function AddBlog() {
         className="mb-5 w-fit self-end hover:scale-110"
         onClick={form.handleSubmit(submit)}
       >
-        <CirclePlus />
-        Add Blog
+        <Check />
+        Done
       </Button>
       <Form {...form} className="">
         <form
@@ -216,15 +243,14 @@ export default function AddBlog() {
             </CardContent>
           </Card>
 
-          {loading && <Loader />}
           {/* Tiny MCE editor */}
+          {loading && <Loader />}
           <FormField
             control={form.control}
             name="content"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="ml-1 text-2xl">Text Editor</FormLabel>
-                <FormMessage />
                 <FormControl>
                   <Editor
                     apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
@@ -245,12 +271,13 @@ export default function AddBlog() {
                     }}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="max-w-[20vh] hover:scale-110">
-            <CirclePlus />
-            Add Blog
+          <Button type="submit" className="max-w-[20vh]">
+            <Check />
+            Done
           </Button>
         </form>
       </Form>

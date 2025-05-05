@@ -1,8 +1,25 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { createRoutesFromElements, createBrowserRouter, Route, RouterProvider } from "react-router";
-import { LandingPage, Signup, Login, Dashboard, Logout, AddBlog, Blog, UserLayout } from "./pages";
+import {
+  createRoutesFromElements,
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+} from "react-router";
+import {
+  LandingPage,
+  Signup,
+  Login,
+  Dashboard,
+  Logout,
+  AddBlog,
+  Blog,
+  UserLayout,
+  NotFound,
+  EditBlog,
+  DeleteBlog,
+} from "./pages";
 import store from "./app/store";
 import { Provider } from "react-redux";
 
@@ -16,8 +33,11 @@ const router = createBrowserRouter(
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="logout" element={<Logout />} />
         <Route path="blog/add" element={<AddBlog />} />
+        <Route path="blog/edit/:blogId" element={<EditBlog />} />
+        <Route path="blog/delete/:blogId" element={<DeleteBlog />} />
         <Route path=":blogId" element={<Blog />} />
       </Route>
+      <Route path="*" element={<NotFound />} />
     </>,
   ),
 );

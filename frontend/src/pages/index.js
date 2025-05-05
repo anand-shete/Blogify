@@ -6,5 +6,20 @@ import Logout from "./Logout";
 import AddBlog from "./AddBlog";
 import Blog from "./Blog";
 import UserLayout from "./UserLayout";
+import NotFound from "./NotFound";
+import EditBlog from "./EditBlog";
+import DeleteBlog from "./DeleteBlog";
 
-export { LandingPage, Signup, Login, Dashboard, Logout, AddBlog, Blog, UserLayout };
+export {
+  LandingPage,
+  Signup,
+  Login,
+  Dashboard,
+  Logout,
+  AddBlog,
+  Blog,
+  UserLayout,
+  NotFound,
+  EditBlog,
+  DeleteBlog,
+};

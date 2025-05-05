@@ -2,8 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const baseRoute = require("./routes/root");
-const UserRoute = require("./routes/user");
-const BlogRoute = require("./routes/blog");
+const userRoute = require("./routes/user");
+const blogRoute = require("./routes/blog");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
@@ -40,8 +40,8 @@ const PORT = Number(process.env.PORT) || 3000;
     return res.status(200).json({ message: "API Health check passed" });
   });
   app.use("/api/v1", baseRoute);
-  app.use("/api/v1/user", UserRoute);
-  app.use("/api/v1/blog", BlogRoute);
+  app.use("/api/v1/user", userRoute);
+  app.use("/api/v1/blog", blogRoute);
 
   try {
     app.listen(PORT, () => console.log(`🚀 Server started on PORT:${PORT}`));

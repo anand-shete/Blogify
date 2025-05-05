@@ -5,21 +5,21 @@ const blogSlice = createSlice({
   initialState: [],
   reducers: {
     setAllBlogs: (state, action) => {
-      action.payload.forEach((newBlog) => {
-        const exists = state.some((blog) => blog._id === newBlog._id);
-        if (!exists) state.push(newBlog);
-      });
+      state = action.payload;
+      return state;
     },
     clearAllBlogs: (state, action) => {
-      // console.log("dtate", JSON.stringify(state, null, 2));
       state = [];
-      // console.log("dtate", JSON.stringify(state, null, 2));s
     },
-    setComments: (state, action) => {
-      console.log(JSON.stringify(action.payload, null, 2));
+    setBlog: (state, action) => {
+      return [action.payload]; // we are not changing the state, but replacing it so we use return
+    },
+    addComment: (state, action) => {
+      state[0].comments = action.payload; // assumes only 1 blog
     },
   },
 });
 
-export const { setAllBlogs, clearAllBlogs, setComments } = blogSlice.actions;
+export const { setAllBlogs, clearAllBlogs, addComment, setBlog } =
+  blogSlice.actions;
 export default blogSlice.reducer;

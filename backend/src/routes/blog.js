@@ -4,6 +4,10 @@ const User = require("../models/user");
 const Blog = require("../models/blog");
 const sanitizeHtml = require("sanitize-html");
 const { putObjectForBlog } = require("../config/aws");
+const { GoogleGenAI } = require("@google/genai");
+const { redis } = require("../utils/redis");
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 router.get("/generateSignedUrl", async (req, res) => {
   try {
@@ -16,18 +20,21 @@ router.get("/generateSignedUrl", async (req, res) => {
   }
 });
 
-router.post("/blog/add", async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
-    const { title, content, email, coverImageURL } = req.body;
-    if (!title || !content || !email)
+    const { title, content, _id: userId, coverImageURL } = req.body;
+    if (!title || !content || !userId)
       return res.status(400).json({ message: "All fields are required" });
 
     const sanitizedContent = sanitizeHtml(content, {
-      allowedTags: ["h1", "h2", "p", "span", "br", "b", "i", "ul", "ol", "li", "a", "img"],
-      allowedAttributes: { "*": ["style"], a: ["href"], img: ["src"] },
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        img: ["src", "alt", "title", "height", "width"],
+      },
     });
 
-    const { _id } = await User.findOne({ email }).select("_id").lean();
+    const { _id } = await User.findById(userId).select("_id").lean();
     if (!_id) return res.status(404).json({ message: "User doesn't exists" });
 
     await Blog.create({
@@ -36,6 +43,8 @@ router.post("/blog/add", async (req, res) => {
       createdBy: _id,
       coverImageURL,
     });
+
+    redis.del("landing_blogs");
     return res.status(201).json({ message: "Blog Added successfully" });
   } catch (error) {
     console.log(error);
@@ -43,43 +52,116 @@ router.post("/blog/add", async (req, res) => {
   }
 });
 
-router.post("/improve-text", async (req, res) => {
+router.post("/edit/:blogId", async (req, res) => {
   try {
-    const { text } = req.body;
-    if (!text) return res.status(400).json({ message: "No text receicved" });
+    const blogId = req.params.blogId;
+    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const { title, content, _id: userId, coverImageURL } = req.body;
+    if (!title || !content || !userId)
+      return res.status(400).json({ message: "All fields are required" });
 
-    const result = await model.generateContent(`Paraphrase this text:${text}`);
-    console.log(result);
-    return result.response.text();
-    return res.status(200).json({ result });
+    const sanitizedContent = sanitizeHtml(content, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        img: ["src", "alt", "title", "height", "width"],
+      },
+    });
+
+    const user = await User.findById(userId).select("_id").lean();
+    if (!user) return res.status(404).json({ message: "User doesn't exists" });
+
+    await Blog.updateOne(
+      { _id: blogId },
+      {
+        title,
+        content: sanitizedContent,
+        createdBy: user._id,
+        coverImageURL,
+      }
+    );
+    // redis.del("landing_blogs");
+    return res.status(200).json({ message: "Blog Modified successfully" });
   } catch (error) {
-    console.error("Error:", error);
-    return res.status(500).json({ error: "Failed to improve text using AI" });
+    console.log(error);
+    return res.status(500).json({ message: "Error while adding Blog" });
   }
 });
 
-router.get("/getBlogs/:email", async (req, res) => {
+router.delete("/delete/:blogId", async (req, res) => {
   try {
-    const email = req.params?.email;
-    if (!email) return res.status(404).json({ message: "Params not received" });
+    const blogId = req.params.blogId;
+    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
 
-    const user = await User.findOne({ email }).lean();
+    await Blog.deleteOne({ _id: blogId });
+    return res.status(200).json({ message: "Blog Deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Error while adding Blog" });
+  }
+});
+
+router.post("/improve", async (req, res) => {
+  try {
+    const { content, title } = req.body;
+    if (!content) return res.status(400).json({ message: "No content receicved" });
+
+    const prompt = `
+    Given the blog title and raw blog body content, improve the grammar, clarity, and overall writing style. Maintain the original meaning.
+    Return the result strictly in clean **Markdown format**. 
+    Do NOT return HTML or wrap content in code blocks.
+    
+    Blog Title:
+    ${title}
+    
+    Blog Content:
+    ${content}
+    `;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }],
+        },
+      ],
+      config: {
+        temperature: 0.3,
+        topP: 0.9,
+        topK: 40,
+      },
+    });
+
+    return res.status(200).json({ message: "successful", content: response.text });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ messsage: "Failed to improve text using AI" });
+  }
+});
+
+router.get("/getBlogs/:userId", async (req, res) => {
+  try {
+    const userId = req.params?.userId;
+    if (!userId) return res.status(404).json({ message: "Params not received" });
+
+    const user = await User.findOne({ _id: userId }).lean();
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const blogs = await Blog.find({ createdBy: user._id }).sort({ createdAt: 1 }).lean();
     return res.status(200).json(blogs);
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Error getting blogs for user" });
+    return res.status(500).json({ message: "Error fetching blogs of user" });
   }
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id).populate();
+    const blog = await Blog.findById(req.params.id)
+      .populate("createdBy")
+      .populate("comments.createdBy");
     if (!blog) return res.status(404).json({ message: "Blog not found" });
 
     return res.status(200).json({ blog });
@@ -89,14 +171,16 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/comment/:blogId", async (req, res) => {
+router.post("/comment/add/:blogId", async (req, res) => {
   try {
-    const { content } = req.body;
+    const { content, createdBy } = req.body;
+    if (!content || !createdBy) return res.status(400).json({ message: "All fields are required" });
 
     const blogId = req.params?.blogId;
-    if (!blogId) return res.status(404).json({ message: "Blog not found" });
+    if (!blogId) return res.status(404).json({ message: "Params not passed" });
 
-    const { createdBy } = await Blog.findById(blogId).select("createdBy").lean();
+    const blog = await Blog.findById(blogId).select("comments").lean();
+    if (!blog) return res.status(404).json({ message: "Blog Not Found" });
 
     await Blog.updateOne(
       { _id: blogId },
@@ -107,8 +191,13 @@ router.post("/comment/:blogId", async (req, res) => {
       }
     );
 
-    const commentArr = [{ content, blogId, createdBy }];
-    return res.status(200).json({ message: "Comment added successfully ", commentArr });
+    const updated = await Blog.findById(blogId)
+      .select("comments")
+      .lean()
+      .populate("comments.createdBy");
+    const reversed = updated.comments.reverse();
+
+    return res.status(200).json({ message: "Comment added successfully ", comments: reversed });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error Adding Comment" });

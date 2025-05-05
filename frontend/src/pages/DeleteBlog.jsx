@@ -1,21 +1,25 @@
 import api from "@/api";
 import { Loader } from "@/components/common";
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import { clearUser } from "@/features/userSlice";
+import { toast } from "sonner";
 
-export default function Logout() {
+export default function DeleteBlog() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { blogId } = useParams();
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get("/user/logout");
-        navigate("/");
-        dispatch(clearUser());
-      } catch (error) {}
+        const res = await api.delete(`/blog/delete/${blogId}`);
+        console.log("res", res.data);
+        toast.success(res.data.message);
+        navigate("/user/dashboard");
+      } catch (error) {
+        console.log("error", error);
+      }
     })();
   }, []);
 

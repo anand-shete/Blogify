@@ -76,7 +76,7 @@ export default function Signup() {
 
   return (
     <div className="flex min-h-screen max-w-screen flex-col items-center justify-center bg-stone-200">
-      <Card className="mx-5 min-w-100 text-center shadow-2xl shadow-black">
+      <Card className="m-5 px-5 text-center shadow-2xl shadow-black md:min-w-110">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
           <CardDescription>Create your Blogify account and Start writing</CardDescription>
@@ -146,12 +146,17 @@ export default function Signup() {
                 )}
               />
               <Button type="submit">Sign Up</Button>
-              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-1 bg-background px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
-              <Button variant="outline" className="w-full" onClick={Oauth} type="button">
+              <Button
+                variant="outline"
+                className="w-full border-black"
+                onClick={Oauth}
+                type="button"
+              >
                 <img src="/google.svg" alt="google Logo" className="h-4" />
                 Sign Up with Google
               </Button>
