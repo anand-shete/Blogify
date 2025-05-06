@@ -5,7 +5,7 @@ const setJWT = async (res, token) => {
       secure: true,
       maxAge: 1000 * 60 * 60,
       path: "/",
-      sameSite: "lax",
+      sameSite: "none",
     });
   } else {
     res.status(200).cookie("token", token, {

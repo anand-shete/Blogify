@@ -16,7 +16,6 @@ export default function UserHome() {
   const user = useSelector(user => user.user);
   const blogs = useSelector(blogs => blogs.blogs);
   const [loading, setLoading] = useState(true);
-  const [blogId, setBlogId] = useState(null);
 
   useEffect(() => {
     if (!user._id) {
@@ -25,7 +24,7 @@ export default function UserHome() {
           const res = await api.get("/user/auth/status");
           dispatch(setUser(res.data));
         } catch (error) {
-          console.log("error", error);
+          // console.log("error", error);
           toast.error(error.response.data.message);
           navigate("/user/login");
         }
@@ -37,7 +36,7 @@ export default function UserHome() {
           const res = await api.get(`/blog/getBlogs/${user._id}`);
           dispatch(setAllBlogs(res.data));
         } catch (error) {
-          console.log("erroring getting blogs", error);
+          // console.log("erroring getting blogs", error);
           toast.error(error.response.data.message);
         } finally {
           setLoading(false);

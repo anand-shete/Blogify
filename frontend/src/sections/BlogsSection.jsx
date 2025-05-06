@@ -25,7 +25,7 @@ export default function BlogsSection() {
         const res = await api.get("/blogs");
         dispatch(setAllBlogs(res.data.blogs));
       } catch (error) {
-        console.log("error in getting all blgos", error);
+        // console.log("error in getting all blgos", error);
       } finally {
         setLoading(false);
       }

@@ -96,8 +96,7 @@ export default function AddBlog() {
       navigate("/user/dashboard");
       toast.success(res.data.message);
     } catch (error) {
-      console.log("error", error);
-
+      // console.log("error", error);
       toast.error(error.respose.data.message || "Some Error Occured");
     }
   };

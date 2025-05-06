@@ -14,11 +14,11 @@ export default function DeleteBlog() {
     (async () => {
       try {
         const res = await api.delete(`/blog/delete/${blogId}`);
-        console.log("res", res.data);
+        // console.log("res", res.data);
         toast.success(res.data.message);
         navigate("/user/dashboard");
       } catch (error) {
-        console.log("error", error);
+        // console.log("error", error);
       }
     })();
   }, []);

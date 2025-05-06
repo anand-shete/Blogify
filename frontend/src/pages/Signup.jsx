@@ -69,7 +69,7 @@ export default function Signup() {
       toast.success(res.data.message);
       navigate("/user/login");
     } catch (error) {
-      console.log("error", error);
+      // console.log("error", error);
       toast.error(error.response?.data?.message || "Account couldn't be created");
     }
   };

@@ -79,7 +79,7 @@ router.post("/signin", async (req, res) => {
           secure: true,
           maxAge: 1000 * 60 * 60,
           path: "/",
-          sameSite: "lax",
+          sameSite: "none",
         })
         .json({ message: "User Login succcess" });
     } else {

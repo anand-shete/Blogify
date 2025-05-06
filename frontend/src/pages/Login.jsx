@@ -45,7 +45,7 @@ export default function Login() {
       toast.success(res.data.message);
       navigate("/user/dashboard");
     } catch (error) {
-      console.log("error", error.response);
+      // console.log("error", error.response);
       if (error.status == 404) navigate("/user/signup");
       toast.error(error.response.data.message || "Login Failed");
     }
