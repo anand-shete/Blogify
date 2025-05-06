@@ -84,10 +84,20 @@ export default function Blog() {
             className="mb-5 first-letter:float-left first-letter:mr-2 first-letter:text-6xl first-letter:font-bold first-letter:capitalize"
           />
           <div className="mb-5 flex items-center justify-center space-x-5">
-            <img
+            <motion.img
               src={blog.createdBy.profileImageURL}
               className="h-20 rounded-full border-2 border-black"
-              alt="user"
+              alt="author"
+              referrerPolicy="no-referrer"
+              onError={e => {
+                e.target.onerror = null;
+                e.target.src =
+                  blog.createdBy.profileImageURL.replace(
+                    /=s\d+-c$/,
+                    "=s200-c",
+                  ) + `?t=${Date.now()}`;
+              }}
+              whileHover={{ scale: 1.1 }}
             />
             <div className="flex flex-col">
               <h1>Written By</h1>
@@ -148,8 +158,17 @@ export default function Blog() {
               <div key={index} className="flex space-x-3 py-4">
                 <img
                   src={comment.createdBy.profileImageURL}
-                  alt="profile"
+                  alt="avatar"
                   className="h-12 rounded-full border border-black"
+                  referrerPolicy="no-referrer"
+                  onError={e => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      blog.createdBy.profileImageURL.replace(
+                        /=s\d+-c$/,
+                        "=s200-c",
+                      ) + `?t=${Date.now()}`;
+                  }}
                 />
                 <div className="flex flex-col">
                   <div className="font-semibold">{comment.createdBy.name}</div>

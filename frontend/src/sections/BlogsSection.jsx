@@ -3,8 +3,6 @@ import { Eye } from "lucide-react";
 import { useNavigate } from "react-router";
 import {
   Card,
-  CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -42,11 +40,7 @@ export default function BlogsSection() {
         </div>
       ) : (
         <div className="">
-          <h1
-            className="my-10 text-center text-2xl font-semibold xl:text-4xl"
-            initial={{ scale: 0.3 }}
-            whileInView={{ scale: 1 }}
-          >
+          <h1 className="my-10 text-center text-2xl font-semibold xl:text-4xl">
             Our Blogs
           </h1>
           <div className="my-20 grid min-h-screen max-w-screen grid-cols-1 gap-10 text-center xl:grid-cols-3">

@@ -2,7 +2,6 @@ const { Router } = require("express");
 const router = Router();
 const User = require("../models/user");
 const { generateUserToken, validateToken } = require("../services/auth");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const passport = require("passport");
 const { putObjectForProfile } = require("../config/aws");
 const { setJWT } = require("../utils/setJWT");
@@ -58,7 +57,9 @@ router.post("/signin", async (req, res) => {
     if (!user) return res.status(404).json({ message: "Account not found" });
 
     if (user.authProvider === "google")
-      return res.status(403).json({ message: "Login using Google" });
+      return res.status(403).json({
+        message: "We found a Google account linked to this email. Please use Google sign-in.",
+      });
 
     const isValid = await user.comparePassword(password);
     if (!isValid) {
