@@ -14,6 +14,8 @@ const PORT = Number(process.env.PORT) || 3000;
 
 (async () => {
   await connectDB();
+
+  // configure CORS
   app.use(
     cors({
       origin: process.env.FRONTEND_URL,
@@ -32,13 +34,19 @@ const PORT = Number(process.env.PORT) || 3000;
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_CALLBACK_URL,
       },
-      (accessToken, refreshToken, profile, done) => done(null, profile)
+      function (accessToken, refreshToken, profile, done) {
+        console.log("accessToken", accessToken);
+        console.log("refreshToken", refreshToken);
+        console.log("profile: ", profile);
+        return done(null, profile);
+      }
     )
   );
 
   app.get("/", async (req, res) => {
-    return res.status(200).json({ message: "API Health check passed" });
+    return res.status(200).json({ message: "API Health check passed 🚀" });
   });
+
   app.use("/api/v1", baseRoute);
   app.use("/api/v1/user", userRoute);
   app.use("/api/v1/blog", blogRoute);

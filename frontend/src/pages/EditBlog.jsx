@@ -24,7 +24,6 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Loader } from "@/components/common";
 import axios from "axios";
 import { setUser } from "@/features/userSlice";
-import { setBlog } from "@/features/blogSlice";
 import { Brain, Check } from "lucide-react";
 import {
   Card,

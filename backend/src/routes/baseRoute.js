@@ -1,13 +1,15 @@
 const { Router } = require("express");
 const router = Router();
 const Blog = require("../models/blog");
-const { redis } = require("../utils/redis");
+const { redis } = require("../config/redis");
 
 router.get("/blogs", async (req, res) => {
   try {
     const cachedBlogs = await redis.get("landing_blogs");
+    // returns null if not found in cache
     if (cachedBlogs) return res.status(200).json({ blogs: JSON.parse(cachedBlogs) });
 
+    // query the database
     const blogs = await Blog.find().sort({ createdAt: -1 }).limit(10);
     await redis.set("landing_blogs", JSON.stringify(blogs), "EX", 60 * 5);
     return res.status(200).json({ blogs });

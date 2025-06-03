@@ -35,6 +35,7 @@ export default function Login() {
     },
   });
 
+  // Since our frontend is authorized domain for OAuth, we can just make request to our backend service. Public access to the /auth/google route is normal and expected in OAuth. Security is handled by the backend server.
   const Oauth = async () => {
     window.location.href = `${import.meta.env.VITE_BASEURL}/user/auth/google`;
   };

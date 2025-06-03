@@ -56,11 +56,11 @@ router.post("/signin", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "Account not found" });
 
-    if (user.authProvider === "google")
+    if (user.authProvider === "google") {
       return res.status(403).json({
         message: "We found a Google account linked to this email. Please use Google sign-in.",
       });
-
+    }
     const isValid = await user.comparePassword(password);
     if (!isValid) {
       return res.status(403).json({ message: "Incorrect password" });
@@ -71,7 +71,7 @@ router.post("/signin", async (req, res) => {
       return res.status(400).json({ message: "Error generating Token" });
     }
 
-    if (process.env.MODE === "production") {
+    if (process.env.NODE_ENV === "production") {
       return res
         .status(200)
         .cookie("token", token, {
@@ -123,7 +123,7 @@ router.get(
   "/auth/google/callback/",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: `${process.env.FRONTEND_URL}/user/signup`,
+    failureRedirect: `${process.env.FRONTEND_URL}/user/login`,
   }),
   async (req, res) => {
     try {
@@ -140,10 +140,14 @@ router.get(
         });
         const token = generateUserToken(user);
         await setJWT(res, token);
+
+        // cookies are removed by browsers if we do a cross-site redirect like this
+        // browser doesn't  know its our own website. so in order to tell browser, that its our own website, host front-end and backend on sub-domains to PREVENT CROSS-SITE REQUESTS
         return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
       }
       // else set cookie and normal Login
       const token = generateUserToken(user);
+      // Cookie Not Set: The new cookie isn’t being accepted by the browser during the OAuth flow.
       await setJWT(res, token);
       return res.redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
     } catch (error) {

@@ -70,7 +70,7 @@ export default function Blog() {
           <motion.h1
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="mt-10 text-center text-2xl sm:text-5xl"
+            className="mt-10 text-center text-2xl font-semibold sm:text-5xl"
           >
             {blog.title}
           </motion.h1>
@@ -92,10 +92,8 @@ export default function Blog() {
               onError={e => {
                 e.target.onerror = null;
                 e.target.src =
-                  blog.createdBy.profileImageURL.replace(
-                    /=s\d+-c$/,
-                    "=s200-c",
-                  ) + `?t=${Date.now()}`;
+                  blog.createdBy.profileImageURL.replace(/=s\d+-c$/, "=s200-c") +
+                  `?t=${Date.now()}`;
               }}
               whileHover={{ scale: 1.1 }}
             />
@@ -108,23 +106,16 @@ export default function Blog() {
 
           {/* Comments Sectiom */}
           <div className="my-20 flex flex-col">
-            <h1 className="pl-2 text-2xl font-semibold">
-              {blog.comments.length} Comments
-            </h1>
+            <h1 className="pl-2 text-2xl font-semibold">{blog.comments.length} Comments</h1>
             {user._id ? (
               <div className="flex items-center space-x-3 py-5 md:py-10">
                 <img
                   src={user.profileImageURL}
                   className="h-12 w-12 rounded-full border border-black"
                 />
-                <form
-                  className="flex items-center space-x-5"
-                  onSubmit={postComment}
-                >
+                <form className="flex items-center space-x-5" onSubmit={postComment}>
                   <div className="flex flex-col">
-                    <Label className="pb-1 pl-1 font-semibold">
-                      {user.name}
-                    </Label>
+                    <Label className="pb-1 pl-1 font-semibold">{user.name}</Label>
                     <Input
                       placeholder="What do you think?"
                       name="comment"
@@ -145,10 +136,7 @@ export default function Blog() {
             ) : (
               <div className="my-3 rounded-2xl p-4 shadow-2xl">
                 Please{" "}
-                <NavLink
-                  to="/user/login"
-                  className="underline underline-offset-1"
-                >
+                <NavLink to="/user/login" className="underline underline-offset-1">
                   Login
                 </NavLink>{" "}
                 to Add Comments
@@ -164,10 +152,8 @@ export default function Blog() {
                   onError={e => {
                     e.target.onerror = null;
                     e.target.src =
-                      blog.createdBy.profileImageURL.replace(
-                        /=s\d+-c$/,
-                        "=s200-c",
-                      ) + `?t=${Date.now()}`;
+                      blog.createdBy.profileImageURL.replace(/=s\d+-c$/, "=s200-c") +
+                      `?t=${Date.now()}`;
                   }}
                 />
                 <div className="flex flex-col">

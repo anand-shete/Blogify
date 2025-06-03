@@ -24,7 +24,6 @@ export default function UserHome() {
           const res = await api.get("/user/auth/status");
           dispatch(setUser(res.data));
         } catch (error) {
-          // console.log("error", error);
           toast.error(error.response.data.message);
           navigate("/user/login");
         }
@@ -36,7 +35,6 @@ export default function UserHome() {
           const res = await api.get(`/blog/getBlogs/${user._id}`);
           dispatch(setAllBlogs(res.data));
         } catch (error) {
-          // console.log("erroring getting blogs", error);
           toast.error(error.response.data.message);
         } finally {
           setLoading(false);
@@ -62,34 +60,25 @@ export default function UserHome() {
           ) : (
             <div className="grid grid-cols-1 gap-10 text-center xl:grid-cols-3">
               {blogs.map(blog => (
-                <Card
-                  key={blog._id}
-                  className="m-10 h-fit transition-transform hover:scale-102"
-                >
+                <Card key={blog._id} className="m-10 h-fit transition-transform hover:scale-102">
                   <CardHeader>
                     <img
                       src={blog.coverImageURL}
                       alt="image"
                       className="h-full w-full rounded-sm"
                     />
-                    <CardTitle className="text-xl sm:text-2xl">
-                      {blog.title}
-                    </CardTitle>
+                    <CardTitle className="text-xl sm:text-2xl">{blog.title}</CardTitle>
                   </CardHeader>
                   <CardFooter className="w-full justify-evenly [&_span]:hidden [&_span]:sm:inline">
                     <Button onClick={() => navigate(`/user/${blog._id}`)}>
                       <span>View</span>
                       <Eye />
                     </Button>
-                    <Button
-                      onClick={() => navigate(`/user/blog/edit/${blog._id}`)}
-                    >
+                    <Button onClick={() => navigate(`/user/blog/edit/${blog._id}`)}>
                       <span>Edit</span>
                       <Pencil />
                     </Button>
-                    <Button
-                      onClick={() => navigate(`/user/blog/delete/${blog._id}`)}
-                    >
+                    <Button onClick={() => navigate(`/user/blog/delete/${blog._id}`)}>
                       <span>Delete</span>
                       <Trash2 />
                     </Button>

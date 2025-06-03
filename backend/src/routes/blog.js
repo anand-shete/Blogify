@@ -5,7 +5,7 @@ const Blog = require("../models/blog");
 const sanitizeHtml = require("sanitize-html");
 const { putObjectForBlog } = require("../config/aws");
 const { GoogleGenAI } = require("@google/genai");
-const { redis } = require("../utils/redis");
+const { redis } = require("../config/redis");
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
