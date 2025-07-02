@@ -1,12 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import {
-  createRoutesFromElements,
-  createBrowserRouter,
-  Route,
-  RouterProvider,
-} from "react-router";
+import { createRoutesFromElements, createBrowserRouter, Route, RouterProvider } from "react-router";
 import {
   LandingPage,
   Signup,
@@ -19,6 +14,8 @@ import {
   NotFound,
   EditBlog,
   DeleteBlog,
+  SitePolicy,
+  TermsOfService,
 } from "./pages";
 import store from "./app/store";
 import { Provider } from "react-redux";
@@ -38,6 +35,8 @@ const router = createBrowserRouter(
         <Route path=":blogId" element={<Blog />} />
       </Route>
       <Route path="*" element={<NotFound />} />
+      <Route path="/privacy-policy" element={<SitePolicy />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
     </>,
   ),
 );

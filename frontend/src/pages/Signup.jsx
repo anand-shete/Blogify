@@ -9,14 +9,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { NavLink, useNavigate, useParams } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name field in required" }),
@@ -40,6 +39,7 @@ export default function Signup() {
       profileImageURL: undefined, // FileList cannot default to ""
     },
   });
+
   const Oauth = async () => {
     window.location.href = `${import.meta.env.VITE_BASEURL}/user/auth/google`;
   };

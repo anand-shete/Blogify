@@ -36,7 +36,7 @@ If you directly want to view this project:
 - Google Cloud API key (for Gemini 2.0 Flash)
 - Google OAuth Key
 
-Follow the below steps to run project locally
+#### Follow the below steps to run project locally
 
 1. Clone the repository
 
@@ -54,56 +54,65 @@ cd ../backend
 npm install
 ```
 
-3. Set up environment variables  
-   Create a `.env` file in the `backend` directory and add following variables
+3. Set up environment variables
+
+Create a `.env` file in the `backend` directory and add following variables
 
 ```bash
-MONGO_URI = mongodb://localhost:27017/blogify
-REDIS_URI = redis://localhost:6379
-PORT = 3000
-JWT_SECRET_KEY = your_JWT_SECRET_KEY
-FRONTEND_URL = http://localhost:5173
-NODE_ENV = development
+MONGO_URI=mongodb://localhost:27017/blogify
+PORT=3000
+NODE_ENV=development
+JWT_SECRET_KEY=your_JWT_SECRET_KEY
+REDIS_URI=redis://localhost:6379
+FRONTEND_URL=http://localhost:5173
 
 # AWS IAM
-ACCESS_KEY = your_ACCESS_KEY
-SECRET_ACCESS_KEY = your_SECRET_ACCESS_KEY
-REGION = ap-south-1
+ACCESS_KEY=your_ACCESS_KEY
+SECRET_ACCESS_KEY=your_SECRET_ACCESS_KEY
 
 # Google OAuth
-GOOGLE_CLIENT_ID = your_GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET = your_GOOGLE_CLIENT_SECRET
-GOOGLE_CALLBACK_URL = your_GOOGLE_CALLBACK_URL
-GEMINI_API_KEY = your_GEMINI_API_KEY
+GOOGLE_CLIENT_ID=your_GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET=your_GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT_URI=your_GOOGLE_REDIRECT_URI
+
+# Google Gemini API key
+GEMINI_API_KEY=your_GEMINI_API_KEY
 
 ```
 
 Create a .env file in the `frontend` directory with following variables
 
 ```bash
-VITE_BASEURL = http://localhost:3000/api/v1
-VITE_TINYMCE_API_KEY = your_TINYMCE_API_KEY
+VITE_BASEURL=http://localhost:3000/api/v1
+VITE_TINYMCE_API_KEY=your_TINYMCE_API_KEY
 ```
 
 4. Start the server
 
-In the `backend` directory
+In the `backend` directory, run script
 
 ```bash
 npm run dev
 ```
 
-In a new terminal, go to the `frontend` directory
+In a new terminal, navigate to `frontend` directory
 
 ```bash
 npm run dev
 ```
 
-5. Verify  
-   If you followed all the above steps properly, you should see
+5. Verify
+
+If you followed all the above steps properly, you should see
 
 ```bash
 Redis connected successfully
 MongoDB connected
-🚀 Server started on PORT:3000
+🚀 Server started on http://localhost:3000
 ```
+
+### Future Implementation
+
+- [ ] Containerize application using Docker
+- [ ] Scale the system to 1000+ concurrent users using AWS services
+- [ ] Create System Design Architecture diagram

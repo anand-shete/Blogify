@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
-const Blog = require("../models/blog");
+const User = require("../models/user.model");
+const Blog = require("../models/blog.model");
 const sanitizeHtml = require("sanitize-html");
 const { putObjectForBlog } = require("../config/aws");
 const { GoogleGenAI } = require("@google/genai");
@@ -44,7 +44,8 @@ router.post("/add", async (req, res) => {
       coverImageURL,
     });
 
-    redis.del("landing_blogs");
+    // update the cache
+    redis.del("blogs");
     return res.status(201).json({ message: "Blog Added successfully" });
   } catch (error) {
     console.log(error);
@@ -81,7 +82,8 @@ router.post("/edit/:blogId", async (req, res) => {
         coverImageURL,
       }
     );
-    // redis.del("landing_blogs");
+
+    redis.del("blogs");
     return res.status(200).json({ message: "Blog Modified successfully" });
   } catch (error) {
     console.log(error);

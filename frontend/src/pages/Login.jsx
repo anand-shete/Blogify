@@ -24,9 +24,12 @@ const formSchema = z.object({
 export default function Login() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  if (search.split("?")[1] === "error") {
-    toast.error("Google Login Failed");
+
+  if (search.split("?")[1] === "OAuthError") {
+    toast.error("Google Authentication Error");
   }
+
+  // if(search.split("?")[1] == )
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,7 +38,7 @@ export default function Login() {
     },
   });
 
-  // Since our frontend is authorized domain for OAuth, we can just make request to our backend service. Public access to the /auth/google route is normal and expected in OAuth. Security is handled by the backend server.
+  // plain simple redirect to backend
   const Oauth = async () => {
     window.location.href = `${import.meta.env.VITE_BASEURL}/user/auth/google`;
   };

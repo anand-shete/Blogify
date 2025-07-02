@@ -15,7 +15,9 @@ export default function NavbarLinks() {
         </>
       ) : (
         <>
-          <NavLink to="/user/signup">Sign Up</NavLink>
+          <NavLink to="/user/signup" className="hover:scale-120">
+            Sign Up
+          </NavLink>
           <NavLink to="/user/login">Login</NavLink>
         </>
       )}

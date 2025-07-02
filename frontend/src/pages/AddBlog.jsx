@@ -1,4 +1,7 @@
 import { z } from "zod";
+import api from "@/api";
+import axios from "axios";
+import { toast } from "sonner";
 import { htmlToText } from "html-to-text";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -16,32 +19,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router";
-import api from "@/api";
-import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
 import { Loader } from "@/components/common";
-import axios from "axios";
 import { setUser } from "@/features/userSlice";
-import { Brain, CirclePlus } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Brain, Plus } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Blog Title required" }),
   content: z.string().min(1, { message: "Content cannot be empty" }),
   blogCoverImage: z
     .instanceof(FileList)
-    .refine(
-      files => !files || files[0].type.startsWith("image"),
-      "File must be an image",
-    )
+    .refine(files => !files || files[0].type.startsWith("image"), "File must be an image")
     .optional(),
 });
 
@@ -129,18 +120,12 @@ export default function AddBlog() {
 
   return (
     <div className="m-10 flex min-h-screen max-w-screen flex-col sm:m-20">
-      <Button
-        className="mb-5 w-fit self-end hover:scale-110"
-        onClick={form.handleSubmit(submit)}
-      >
-        <CirclePlus />
+      <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
+        <Plus />
         Add Blog
       </Button>
       <Form {...form} className="">
-        <form
-          onSubmit={form.handleSubmit(submit)}
-          className="flex flex-col space-y-10"
-        >
+        <form onSubmit={form.handleSubmit(submit)} className="flex flex-col space-y-10">
           <FormField
             control={form.control}
             name="title"
@@ -169,9 +154,7 @@ export default function AddBlog() {
             name="blogCoverImage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1 text-2xl">
-                  Cover Image (optional)
-                </FormLabel>
+                <FormLabel className="ml-1 text-2xl">Cover Image (optional)</FormLabel>
                 <FormControl>
                   <Input
                     type="file"
@@ -208,9 +191,7 @@ export default function AddBlog() {
               {useAI ? (
                 <p>Please Wait...</p>
               ) : (
-                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-                  {generate}
-                </ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{generate}</ReactMarkdown>
               )}
             </CardContent>
           </Card>
@@ -248,7 +229,7 @@ export default function AddBlog() {
             )}
           />
           <Button type="submit" className="max-w-[20vh] hover:scale-110">
-            <CirclePlus />
+            <Plus />
             Add Blog
           </Button>
         </form>

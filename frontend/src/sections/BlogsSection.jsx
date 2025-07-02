@@ -1,12 +1,7 @@
 import api from "@/api";
 import { Eye } from "lucide-react";
 import { useNavigate } from "react-router";
-import {
-  Card,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { setAllBlogs } from "@/features/blogSlice";
 import { useEffect, useState } from "react";
@@ -40,15 +35,10 @@ export default function BlogsSection() {
         </div>
       ) : (
         <div className="">
-          <h1 className="my-10 text-center text-2xl font-semibold xl:text-4xl">
-            Our Blogs
-          </h1>
+          <h1 className="my-10 text-center text-2xl font-semibold xl:text-4xl">Our Blogs</h1>
           <div className="my-20 grid min-h-screen max-w-screen grid-cols-1 gap-10 text-center xl:grid-cols-3">
             {blogs.map(blog => (
-              <Card
-                key={blog._id}
-                className="mx-10 h-fit transition-transform hover:scale-102"
-              >
+              <Card key={blog._id} className="mx-10 h-fit transition-transform hover:scale-102">
                 <CardHeader>
                   <img
                     src={blog.coverImageURL}

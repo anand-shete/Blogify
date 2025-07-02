@@ -9,6 +9,8 @@ import UserLayout from "./UserLayout";
 import NotFound from "./NotFound";
 import EditBlog from "./EditBlog";
 import DeleteBlog from "./DeleteBlog";
+import SitePolicy from "./SitePolicy";
+import TermsOfService from "./TermsOfService";
 
 export {
   LandingPage,
@@ -22,4 +24,6 @@ export {
   NotFound,
   EditBlog,
   DeleteBlog,
+  SitePolicy,
+  TermsOfService,
 };

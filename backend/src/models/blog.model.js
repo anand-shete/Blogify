@@ -17,16 +17,9 @@ const blogSchema = new mongoose.Schema(
     comments: [
       {
         _id: false,
-        content: {
-          type: String,
-        },
-        blogId: {
-          type: mongoose.Schema.Types.ObjectId,
-        },
-        createdBy: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "user",
-        },
+        content: { type: String },
+        blogId: { type: mongoose.Schema.Types.ObjectId },
+        createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
       },
     ],
     createdBy: {
