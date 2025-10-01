@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { NavLink, useNavigate, useLocation } from "react-router";
 import api from "@/api";
 import { toast } from "sonner";
+import google from "@/assets/google.svg";
 
 const formSchema = z.object({
   email: z.string().min(1, { message: "Email field in required" }),
@@ -40,23 +41,23 @@ export default function Login() {
 
   // plain simple redirect to backend
   const Oauth = async () => {
-    window.location.href = `${import.meta.env.VITE_BASEURL}/user/auth/google`;
+    window.location.href = `${import.meta.env.VITE_BACKEND_URI}/user/auth/google`;
   };
 
   const submit = async data => {
     try {
       const res = await api.post("/user/signin", data);
       toast.success(res.data.message);
-      navigate("/user/dashboard");
+      navigate("/dashboard");
     } catch (error) {
       // console.log("error", error.response);
-      if (error.status == 404) navigate("/user/signup");
+      if (error.status == 404) navigate("/signup");
       toast.error(error.response.data.message || "Login Failed");
     }
   };
 
   return (
-    <div className="flex max-w-screen flex-col items-center justify-center bg-stone-200">
+    <div className="flex min-w-full flex-col items-center justify-center bg-neutral-200">
       <Card className="mx-5 my-20 px-5 text-center shadow-2xl shadow-black md:min-w-110">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -108,12 +109,12 @@ export default function Login() {
                 onClick={Oauth}
                 type="button"
               >
-                <img src="/google.svg" alt="google Logo" className="h-4" />
+                <img src={google} alt="google Logo" className="h-4" />
                 Login with Google
               </Button>
               <div className="mt-4 text-center text-sm">
                 Don't have an account?{" "}
-                <NavLink to="/user/signup" className="underline underline-offset-4">
+                <NavLink to="/signup" className="underline underline-offset-4">
                   Sign up
                 </NavLink>
               </div>

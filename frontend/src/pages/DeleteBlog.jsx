@@ -16,7 +16,7 @@ export default function DeleteBlog() {
         const res = await api.delete(`/blog/delete/${blogId}`);
         // console.log("res", res.data);
         toast.success(res.data.message);
-        navigate("/user/dashboard");
+        navigate("/dashboard");
       } catch (error) {
         // console.log("error", error);
       }
@@ -24,7 +24,7 @@ export default function DeleteBlog() {
   }, []);
 
   return (
-    <div className="flex min-h-[80vh] max-w-screen flex-col items-center justify-center">
+    <div className="flex min-h-[80vh] min-w-full flex-col items-center justify-center">
       <h1 className="mb-15 text-2xl sm:text-5xl">Please Wait</h1>
       <Loader />
     </div>

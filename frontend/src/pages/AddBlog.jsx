@@ -53,7 +53,7 @@ export default function AddBlog() {
         dispatch(setUser(res.data));
       } catch (error) {
         toast.error(error.response.data.message);
-        navigate("/user/login");
+        navigate("/login");
       }
     })();
   }, []);
@@ -73,7 +73,9 @@ export default function AddBlog() {
       if (file) {
         const res = await api.get("/blog/generateSignedUrl");
         const url = res.data.url;
+        console.log("url", url);
 
+        // fixme put url not working, update .env
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
         });
@@ -84,17 +86,17 @@ export default function AddBlog() {
         coverImageURL,
         _id: user._id,
       });
-      navigate("/user/dashboard");
+      navigate("/dashboard");
       toast.success(res.data.message);
     } catch (error) {
-      // console.log("error", error);
+      console.log("error", error);
       toast.error(error.respose.data.message || "Some Error Occured");
     }
   };
 
   const enchance = async () => {
     if (!contentRef.current.getContent() || !titleRef.current.value) {
-      toast.warning("Both Title and Content are required");
+      toast.warning("Please give Title and Content");
       return;
     }
 
@@ -119,7 +121,7 @@ export default function AddBlog() {
   };
 
   return (
-    <div className="m-10 flex min-h-screen max-w-screen flex-col sm:m-20">
+    <div className="m-10 flex min-h-screen flex-col sm:m-20">
       <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
         <Plus />
         Add Blog
@@ -170,19 +172,18 @@ export default function AddBlog() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">
-                <Brain className="relative top-[-3px] mr-1 inline text-green-600" />
+                <Brain className="text-primary relative top-[-3px] mr-2 inline" />
                 AI Suggestions
               </CardTitle>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-muted-foreground text-sm">
                 Use Artificial Intelligence to refine your content.
               </span>
               <CardDescription>
                 <Button
-                  className="transition-all duration-200 hover:scale-110 hover:bg-green-600"
+                  className="mt-4 transition-all duration-200 hover:scale-110"
                   onClick={enchance}
                   type="button"
                 >
-                  <Brain />
                   Get Suggestions
                 </Button>
               </CardDescription>

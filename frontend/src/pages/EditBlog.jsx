@@ -1,11 +1,6 @@
 import { z } from "zod";
-import { htmlToText } from "html-to-text";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import api from "@/api";
+import axios from "axios";
 import {
   Form,
   FormControl,
@@ -14,40 +9,34 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { htmlToText } from "html-to-text";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate, useParams } from "react-router";
-import api from "@/api";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
 import { Loader } from "@/components/common";
-import axios from "axios";
-import { setUser } from "@/features/userSlice";
 import { Brain, Check } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Blog Title required" }),
   content: z.string().min(1, { message: "Content cannot be empty" }),
   blogCoverImage: z
     .instanceof(FileList)
-    .refine(
-      files => !files || files[0].type.startsWith("image"),
-      "File must be an image",
-    )
+    .refine(files => !files || files[0].type.startsWith("image"), "File must be an image")
     .optional(),
 });
 
 export default function EditBlog() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { blogId } = useParams();
   const user = useSelector(user => user.user);
   const [loading, setLoading] = useState(true);
@@ -70,30 +59,7 @@ export default function EditBlog() {
   });
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await api.get("/user/auth/status");
-        dispatch(setUser(res.data));
-      } catch (error) {
-        toast.error(error.response.data.message);
-        navigate("/user/login");
-      }
-    })();
-    if (blogId)
-      (async () => {
-        try {
-          const res = await api.get(`/blog/${blogId}`);
-          setBlog({
-            content: res.data.blog.content,
-            title: res.data.blog.title,
-          });
-        } catch (error) {
-          toast.error(error.response.data.message);
-        }
-      })();
-  }, []);
-
-  useEffect(() => {
+    console.log("blog", blog);
     if (blog.content && blog.title) {
       form.reset({
         content: blog.content,
@@ -121,7 +87,7 @@ export default function EditBlog() {
         coverImageURL,
         _id: user._id,
       });
-      navigate("/user/dashboard");
+      navigate("/dashboard");
       toast.success(res.data.message);
     } catch (error) {
       toast.error(error.respose.data.message || "Some Error Occured");
@@ -155,19 +121,13 @@ export default function EditBlog() {
   };
 
   return (
-    <div className="m-10 flex min-h-screen max-w-screen flex-col sm:m-20">
-      <Button
-        className="mb-5 w-fit self-end hover:scale-110"
-        onClick={form.handleSubmit(submit)}
-      >
+    <div className="m-10 flex min-h-screen min-w-full flex-col sm:m-20">
+      <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
         <Check />
         Done
       </Button>
       <Form {...form} className="">
-        <form
-          onSubmit={form.handleSubmit(submit)}
-          className="flex flex-col space-y-10"
-        >
+        <form onSubmit={form.handleSubmit(submit)} className="flex flex-col space-y-10">
           <FormField
             control={form.control}
             name="title"
@@ -196,9 +156,7 @@ export default function EditBlog() {
             name="blogCoverImage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1 text-2xl">
-                  Cover Image (optional)
-                </FormLabel>
+                <FormLabel className="ml-1 text-2xl">Cover Image (optional)</FormLabel>
                 <FormControl>
                   <Input
                     type="file"
@@ -235,15 +193,12 @@ export default function EditBlog() {
               {useAI ? (
                 <p>Please Wait...</p>
               ) : (
-                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-                  {generate}
-                </ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{generate}</ReactMarkdown>
               )}
             </CardContent>
           </Card>
 
           {/* Tiny MCE editor */}
-          {loading && <Loader />}
           <FormField
             control={form.control}
             name="content"

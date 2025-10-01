@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { NavLink, useNavigate } from "react-router";
+import google from "@/assets/google.svg";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name field in required" }),
@@ -41,7 +42,7 @@ export default function Signup() {
   });
 
   const Oauth = async () => {
-    window.location.href = `${import.meta.env.VITE_BASEURL}/user/auth/google`;
+    window.location.href = `${import.meta.env.VITE_BACKEND_URI}/user/auth/google`;
   };
 
   const submit = async data => {
@@ -67,7 +68,7 @@ export default function Signup() {
 
       const res = await api.post("/user/signup", { ...data, profileImageURL });
       toast.success(res.data.message);
-      navigate("/user/login");
+      navigate("/login");
     } catch (error) {
       // console.log("error", error);
       toast.error(error.response?.data?.message || "Account couldn't be created");
@@ -75,7 +76,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex min-h-screen max-w-screen flex-col items-center justify-center bg-stone-200">
+    <div className="flex min-h-screen min-w-full flex-col items-center justify-center bg-neutral-200">
       <Card className="m-5 px-5 text-center shadow-2xl shadow-black md:min-w-110">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
@@ -157,12 +158,12 @@ export default function Signup() {
                 onClick={Oauth}
                 type="button"
               >
-                <img src="/google.svg" alt="google Logo" className="h-4" />
+                <img src={google} alt="google Logo" className="h-4" />
                 Sign Up with Google
               </Button>
               <div className="text-center text-sm">
                 Already have an account?{" "}
-                <NavLink to="/user/login" className="underline underline-offset-4">
+                <NavLink to="/login" className="underline underline-offset-4">
                   Login
                 </NavLink>
               </div>

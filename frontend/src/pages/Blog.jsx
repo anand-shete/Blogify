@@ -60,7 +60,7 @@ export default function Blog() {
   };
 
   return (
-    <div className="max-w-screen">
+    <div className="min-w-full">
       {loading ? (
         <div className="flex min-h-screen items-center">
           <Loader />
@@ -136,7 +136,7 @@ export default function Blog() {
             ) : (
               <div className="my-3 rounded-2xl p-4 shadow-2xl">
                 Please{" "}
-                <NavLink to="/user/login" className="underline underline-offset-1">
+                <NavLink to="/login" className="underline underline-offset-1">
                   Login
                 </NavLink>{" "}
                 to Add Comments

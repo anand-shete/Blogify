@@ -20,7 +20,7 @@ export default function Logout() {
   }, []);
 
   return (
-    <div className="flex min-h-[80vh] max-w-screen flex-col items-center justify-center">
+    <div className="flex min-h-[80vh] min-w-full flex-col items-center justify-center">
       <h1 className="mb-15 text-2xl sm:text-5xl">Please Wait</h1>
       <Loader />
     </div>

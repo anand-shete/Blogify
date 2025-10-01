@@ -1,9 +1,9 @@
-const axios = require("axios");
-const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const User = require("../models/user.model");
 const { setJWT } = require("../utils/setJWT");
 const { putObjectForProfile } = require("../config/aws");
 const { generateUserToken, validateToken } = require("../services/auth");
+const { getGoogleOAuthClient } = require("../utils/oauth.utils");
 
 const checkAuth = async (req, res) => {
   const { email } = req.body;
@@ -97,76 +97,75 @@ const authStatus = async (req, res) => {
   }
 };
 
-// client requests to backend
 const googleOAuth = (req, res) => {
   try {
-    const params = {
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+    const oauthclient = getGoogleOAuthClient();
+    const state = crypto.randomBytes(32).toString("hex");
+
+    req.session.state = state;
+
+    const authorizedUrl = oauthclient.generateAuthUrl({
+      access_type: "offline",
+      scope: [
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "openid",
+      ],
+      state,
+      prompt: "consent",
       response_type: "code",
-      scope: "openid profile email",
-      access_type: "offline", // Required for refresh token
-      prompt: "consent", // Always ask to re-authenticate (dev only)
-    };
+    });
 
-    const stringParams = new URLSearchParams(params).toString();
-
-    return res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${stringParams}`);
+    return res.redirect(authorizedUrl);
   } catch (error) {
-    console.log("Error generating OAuth", error);
-    return res.status(500).json({ message: "Error generating Google Auth URl" });
+    console.log("Error generating google authorization url", error);
+    return res.status(500).json({ message: "Error generating Google Auth URL" });
   }
 };
 
 const googleOAuthCallback = async (req, res) => {
-  const code = req.query?.code;
-  const error = req.query?.error;
-  if (error) {
-    return res.redirect(`${process.env.FRONTEND_URL}/user/login?OAuthError`);
-  }
+  try {
+    const code = req.query?.code;
+    if (req.query?.error || req.query?.state !== req.session.state) {
+      return res.redirect(`${process.env.FRONTEND_URL}/user/login?OAuthError`);
+    }
 
-  // exchange code for tokens
-  const response = await axios.post("https://oauth2.googleapis.com/token", {
-    code,
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    redirect_uri: process.env.GOOGLE_REDIRECT_URI,
-    grant_type: "authorization_code",
-  });
-  if (!response.data.id_token) {
-    return res.redirect(`${process.env.FRONTEND_URL}/user/login?OAuthError`);
-  }
-  const { id_token, access_token } = response.data;
+    const oauthclient = getGoogleOAuthClient();
 
-  // Decode the id_token (JWT) to get user info
-  const googleUser = jwt.decode(id_token);
-  const { name, email, picture } = googleUser;
+    const { tokens } = await oauthclient.getToken(code);
+    const { id_token } = tokens;
 
-  // check if user exists in database and create if doesn't
-  const check = await User.countDocuments({ name, email, authProvider: "google" }).lean();
-
-  if (!check) {
-    await User.create({
-      name,
-      email,
-      profileImageURL: picture,
-      role: "user",
-      authProvider: "google",
+    const ticket = await oauthclient.verifyIdToken({
+      idToken: id_token,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
+    const userInfo = ticket.getPayload();
+    const { name, email } = userInfo;
+
+    // check if user exists in database and create if doesn't
+    const user = await User.findOne({ name, email, authProvider: "google" }).lean();
+    if (!user) {
+      await User.create({
+        name,
+        email,
+        profileImageURL: picture,
+        role: "user",
+        authProvider: "google",
+      });
+    }
+
+    const token = generateUserToken(user);
+    if (!token) {
+      return res.status(500).json({ message: "Error generaing token" });
+    }
+
+    await setJWT(res, token);
+
+    return res.status(302).redirect(`${process.env.FRONTEND_URL}/dashboard`);
+  } catch (error) {
+    console.log("error redirecting in google oauth flow", error);
+    return res.redirect(`${process.env.FRONTEND_URL}/login?OAuthError`);
   }
-
-  const user = await User.findOne({ name, email, authProvider: "google" }).lean();
-
-  // create your own auth tokens for login
-  const token = generateUserToken(user);
-  if (!token) {
-    return res.status(500).json({ message: "Error generaing token" });
-  }
-
-  await setJWT(res, token);
-
-  // redirect to client instead of sending json response
-  return res.status(302).redirect(`${process.env.FRONTEND_URL}/user/dashboard`);
 };
 
 module.exports = {

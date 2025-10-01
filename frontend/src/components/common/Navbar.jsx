@@ -1,7 +1,7 @@
 import { useState } from "react";
 import NavbarBurgerMenu from "./NavbarBurgerMenu";
 import NavbarLogo from "./NavbarLogo";
-import NavbarLinks from "./NavbarLinks";
+import DesktopNavbar from "./DesktopNavbar";
 import { Button } from "@/components/ui/button";
 import { AlignJustify, X } from "lucide-react";
 
@@ -9,14 +9,14 @@ export default function Navbar() {
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-3 flex min-h-20 max-w-screen items-center justify-around border-b-1 border-black bg-white shadow-2xl">
+    <nav className="z-3 min-h-22 border-b-1 sticky top-0 flex min-w-full items-center justify-around border-black bg-white shadow-2xl">
       <NavbarLogo />
       <NavbarBurgerMenu
         isBurgerOpen={isBurgerOpen}
         toggleBurger={() => setIsBurgerOpen(!isBurgerOpen)}
       />
-      <NavbarLinks />
-      <Button className="relative z-1 sm:hidden" onClick={() => setIsBurgerOpen(!isBurgerOpen)}>
+      <DesktopNavbar />
+      <Button className="z-1 relative sm:hidden" onClick={() => setIsBurgerOpen(!isBurgerOpen)}>
         {isBurgerOpen ? <X /> : <AlignJustify />}
       </Button>
     </nav>

@@ -12,7 +12,8 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 router.get("/generateSignedUrl", async (req, res) => {
   try {
     const url = await putObjectForBlog();
-    if (!url) return res.status(500).json({ message: "Error generating Signed URL" });
+    if (!url)
+      return res.status(500).json({ message: "Error generating Signed URL" });
 
     return res.status(201).json({ message: "Generated Pre-signed URL", url });
   } catch (error) {
@@ -56,7 +57,8 @@ router.post("/add", async (req, res) => {
 router.post("/edit/:blogId", async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
+    if (!blogId)
+      return res.status(400).json({ message: "Params not sent properly" });
 
     const { title, content, _id: userId, coverImageURL } = req.body;
     if (!title || !content || !userId)
@@ -94,7 +96,8 @@ router.post("/edit/:blogId", async (req, res) => {
 router.delete("/delete/:blogId", async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
+    if (!blogId)
+      return res.status(400).json({ message: "Params not sent properly" });
 
     await Blog.deleteOne({ _id: blogId });
     return res.status(200).json({ message: "Blog Deleted successfully" });
@@ -107,7 +110,8 @@ router.delete("/delete/:blogId", async (req, res) => {
 router.post("/improve", async (req, res) => {
   try {
     const { content, title } = req.body;
-    if (!content) return res.status(400).json({ message: "No content receicved" });
+    if (!content)
+      return res.status(400).json({ message: "No content receicved" });
 
     const prompt = `
     Given the blog title and raw blog body content, improve the grammar, clarity, and overall writing style. Maintain the original meaning.
@@ -123,12 +127,7 @@ router.post("/improve", async (req, res) => {
 
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: prompt }],
-        },
-      ],
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: {
         temperature: 0.3,
         topP: 0.9,
@@ -136,22 +135,31 @@ router.post("/improve", async (req, res) => {
       },
     });
 
-    return res.status(200).json({ message: "successful", content: response.text });
+    return res.status(200).json({
+      message: "successful",
+      content: response.text,
+    });
   } catch (error) {
     console.error("Error:", error);
-    return res.status(500).json({ messsage: "Failed to improve text using AI" });
+    return res.status(500).json({
+      messsage: "Failed to improve text using AI",
+    });
   }
 });
 
 router.get("/getBlogs/:userId", async (req, res) => {
   try {
     const userId = req.params?.userId;
-    if (!userId) return res.status(404).json({ message: "Params not received" });
+    if (!userId) {
+      return res.status(404).json({ message: "Params not received" });
+    }
 
     const user = await User.findOne({ _id: userId }).lean();
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const blogs = await Blog.find({ createdBy: user._id }).sort({ createdAt: 1 }).lean();
+    const blogs = await Blog.find({ createdBy: user._id })
+      .sort({ createdAt: 1 })
+      .lean();
     return res.status(200).json(blogs);
   } catch (error) {
     console.log(error);
@@ -176,7 +184,8 @@ router.get("/:id", async (req, res) => {
 router.post("/comment/add/:blogId", async (req, res) => {
   try {
     const { content, createdBy } = req.body;
-    if (!content || !createdBy) return res.status(400).json({ message: "All fields are required" });
+    if (!content || !createdBy)
+      return res.status(400).json({ message: "All fields are required" });
 
     const blogId = req.params?.blogId;
     if (!blogId) return res.status(404).json({ message: "Params not passed" });
@@ -199,7 +208,9 @@ router.post("/comment/add/:blogId", async (req, res) => {
       .populate("comments.createdBy");
     const reversed = updated.comments.reverse();
 
-    return res.status(200).json({ message: "Comment added successfully ", comments: reversed });
+    return res
+      .status(200)
+      .json({ message: "Comment added successfully ", comments: reversed });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error Adding Comment" });

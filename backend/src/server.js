@@ -6,6 +6,7 @@ const userRoute = require("./routes/user.routes");
 const blogRoute = require("./routes/blog.routes");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -25,7 +26,8 @@ const startServer = async () => {
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
     app.use(cookieParser());
-
+    app.use(session({ secret: process.env.SESSION_KEY, resave: false, saveUninitialized: false }));
+    
     app.get("/", async (req, res) => {
       return res.status(200).json({ message: "Blogify API Health check passed 🚀" });
     });

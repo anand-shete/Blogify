@@ -5,7 +5,7 @@ import Dashboard from "./Dashboard";
 import Logout from "./Logout";
 import AddBlog from "./AddBlog";
 import Blog from "./Blog";
-import UserLayout from "./UserLayout";
+import Layout from "./Layout";
 import NotFound from "./NotFound";
 import EditBlog from "./EditBlog";
 import DeleteBlog from "./DeleteBlog";
@@ -20,7 +20,7 @@ export {
   Logout,
   AddBlog,
   Blog,
-  UserLayout,
+  Layout,
   NotFound,
   EditBlog,
   DeleteBlog,

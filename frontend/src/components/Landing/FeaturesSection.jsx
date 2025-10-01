@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Edit3, Save, Lock, Database, FileEdit, Server, MessageSquare } from "lucide-react";
+import { Edit3, Lock, Database, MessageSquare } from "lucide-react";
 
 export default function FeaturesSection() {
   const features = [
@@ -16,7 +16,7 @@ export default function FeaturesSection() {
     {
       icon: Lock,
       title: "Secure Authentication",
-      description: "Login safely using JWT or Google OAuth integration",
+      description: "Login safely using E-mail or Google OAuth integration",
     },
     {
       icon: Database,
@@ -26,11 +26,13 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="bg-stone-100 px-4 py-16">
-      <div className="mx-auto max-w-6xl">
+    <section className="border-b bg-neutral-100 px-4 py-16">
+      <div className="mx-10">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold">Everything you need to blog</h2>
-          <p className="mx-auto max-w-3xl text-lg text-gray-600">
+          <h2 className="text-primary mb-2 text-2xl font-semibold lg:text-4xl">
+            Everything you need to blog
+          </h2>
+          <p>
             Powerful features designed to help you create, share, and grow your content effortlessly
           </p>
         </div>
@@ -39,10 +41,13 @@ export default function FeaturesSection() {
           {features.map((feature, index) => {
             const IconComponent = feature.icon;
             return (
-              <Card key={index} className="border-0 shadow-sm transition-shadow hover:shadow-xl">
+              <Card
+                key={index}
+                className="border border-gray-400 shadow-sm transition-shadow hover:shadow-xl"
+              >
                 <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-stone-100">
-                    <IconComponent className="h-6 w-6" />
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
+                    <IconComponent className="text-primary h-6 w-6" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
                   <p className="text-gray-600">{feature.description}</p>
