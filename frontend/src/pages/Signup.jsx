@@ -17,6 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { NavLink, useNavigate } from "react-router";
 import google from "@/assets/google.svg";
+import { Loader } from "@/components/common";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name field in required" }),
@@ -30,6 +32,7 @@ const formSchema = z.object({
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -47,19 +50,25 @@ export default function Signup() {
 
   const submit = async data => {
     try {
+      setLoading(true);
       const file = data?.profileImageURL?.[0];
       let profileImageURL;
 
       const check = await api.post("/user/check", data);
       if (check.data) {
-        toast.error("Account Already exists");
+        toast.error("Account Already exists, please Login");
         return;
       }
 
-      if (file) {
-        const res = await api.get("/user/generateSignedUrl");
-        const url = res.data.url;
+      if (file && file.size > 500000) {
+        toast.error("Profile Image must be less than 500KB");
+        return;
+      }
 
+      // configured CORS policy of the bucket
+      if (file) {
+        const res = await api.post("/user/generate-signed-url", { type: file.type });
+        const url = res.data.url;
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
         });
@@ -70,14 +79,18 @@ export default function Signup() {
       toast.success(res.data.message);
       navigate("/login");
     } catch (error) {
-      // console.log("error", error);
       toast.error(error.response?.data?.message || "Account couldn't be created");
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div className="flex min-h-screen min-w-full flex-col items-center justify-center bg-neutral-200">
-      <Card className="m-5 px-5 text-center shadow-2xl shadow-black md:min-w-110">
+      <Card className="md:min-w-110 m-5 px-5 text-center shadow-2xl shadow-black">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
           <CardDescription>Create your Blogify account and Start writing</CardDescription>
@@ -147,8 +160,8 @@ export default function Signup() {
                 )}
               />
               <Button type="submit">Sign Up</Button>
-              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-1 bg-background px-2 text-muted-foreground">
+              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:flex after:items-center after:border-t">
+                <span className="z-1 bg-background text-muted-foreground relative px-2">
                   Or continue with
                 </span>
               </div>

@@ -9,7 +9,7 @@ export default function DesktopNavbar() {
     <div className="**:transition-all **:hover:scale-120 **:hover:underline hidden space-x-10 duration-300 sm:block">
       <Link to="/">Home</Link>
       <Link to="/dashboard">Dashboard</Link>
-      <Link to="/dashboard">Contact Us</Link>
+
       {user._id ? (
         <>
           <Link to="/blog/add">Add Blog</Link>

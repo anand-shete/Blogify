@@ -12,7 +12,7 @@ const useFetchBlogs = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     if (!user._id) {
       (async () => {

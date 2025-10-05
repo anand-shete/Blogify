@@ -47,7 +47,7 @@ export default function FAQSection() {
               <AccordionTrigger className="text-left leading-relaxed lg:text-lg">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="leading-relaxed lg:text-lg pl-4">
+              <AccordionContent className="pl-4 leading-relaxed lg:text-lg">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

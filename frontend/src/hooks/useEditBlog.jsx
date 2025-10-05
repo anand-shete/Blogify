@@ -1,6 +1,6 @@
 import api from "@/api";
 import { setUser } from "@/features/userSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
@@ -9,6 +9,11 @@ const useEditBlog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { blogId } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [blog, setBlog] = useState({
+    title: "",
+    content: "",
+  });
 
   useEffect(() => {
     (async () => {
@@ -35,6 +40,8 @@ const useEditBlog = () => {
       })();
     }
   }, []);
+
+  return { blog, loading };
 };
 
 export default useEditBlog;

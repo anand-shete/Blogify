@@ -13,7 +13,7 @@ const {
 const router = Router();
 
 router.post("/check", checkAuth);
-router.get("/generateSignedUrl", generateSignedUrl);
+router.post("/generate-signed-url", generateSignedUrl);
 router.post("/signup", signup);
 router.post("/signin", signin);
 router.get("/logout", logout);

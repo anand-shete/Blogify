@@ -16,7 +16,11 @@ const checkAuth = async (req, res) => {
 
 const generateSignedUrl = async (req, res) => {
   try {
-    const url = await putObjectForProfile();
+    const fileType = req.body.type;
+    if (!fileType) {
+      return res.status(401).json({ message: "Invalid File Type" });
+    }
+    const url = await putObjectForProfile(fileType);
     if (!url) return res.status(500).json({ message: "Error generating Signed URL" });
     return res.status(201).json({ message: "Generated Pre-signed URL", url });
   } catch (error) {
@@ -140,12 +144,13 @@ const googleOAuthCallback = async (req, res) => {
       audience: process.env.GOOGLE_CLIENT_ID,
     });
     const userInfo = ticket.getPayload();
-    const { name, email } = userInfo;
+    const { name, email, picture } = userInfo;
 
     // check if user exists in database and create if doesn't
-    const user = await User.findOne({ name, email, authProvider: "google" }).lean();
+    let user;
+    user = await User.findOne({ name, email, authProvider: "google" }).lean();
     if (!user) {
-      await User.create({
+      user = await User.create({
         name,
         email,
         profileImageURL: picture,

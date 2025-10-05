@@ -18,6 +18,7 @@ const Blog = lazy(() => import("./pages/Blog"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SitePolicy = lazy(() => import("./pages/SitePolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const Contact = lazy(() => import("./pages/Contact"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(

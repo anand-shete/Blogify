@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import useFetchBlogs from "@/hooks/useFetchBlogs";
 import DashboardLoader from "@/components/Dashboard/DashboardLoader";
 import DashboardSection from "@/components/Dashboard/DashboardSection";
+import { Toaster } from "sonner";
 
 export default function UserHome() {
   const { blogs, loading, user } = useFetchBlogs();

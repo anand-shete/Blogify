@@ -71,11 +71,9 @@ export default function AddBlog() {
       const file = data?.blogCoverImage?.[0];
       let coverImageURL;
       if (file) {
-        const res = await api.get("/blog/generateSignedUrl");
+        const res = await api.get("/blog/generate-signed-url");
         const url = res.data.url;
-        console.log("url", url);
 
-        // fixme put url not working, update .env
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
         });
@@ -89,7 +87,6 @@ export default function AddBlog() {
       navigate("/dashboard");
       toast.success(res.data.message);
     } catch (error) {
-      console.log("error", error);
       toast.error(error.respose.data.message || "Some Error Occured");
     }
   };

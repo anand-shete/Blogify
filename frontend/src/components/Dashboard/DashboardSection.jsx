@@ -13,19 +13,19 @@ const DashboardSection = ({ blogs }) => {
           Your Blogs will be displayed here
         </div>
       ) : (
-        <div className="lg:mx-30 mx-10 mt-5 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="lg:mx-30 mx-10 mt-5 grid grid-cols-1 gap-20 md:grid-cols-2 xl:grid-cols-3">
           {blogs.map(blog => (
             <Card
               key={blog._id}
-              className="group border-neutral-200 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+              className="group border-neutral-600 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
             >
               <CardContent className="p-0">
                 {/* Blog Image */}
-                <div className="relative overflow-hidden rounded-t-lg">
+                <div className="relative overflow-hidden">
                   <img
                     src={blog.coverImageURL}
                     alt={blog.title}
-                    className="h-48 w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                    className="h-48 w-full object-cover object-center transition-transform duration-200 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/10" />
                 </div>

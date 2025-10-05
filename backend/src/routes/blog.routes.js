@@ -9,11 +9,10 @@ const { redis } = require("../config/redis");
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-router.get("/generateSignedUrl", async (req, res) => {
+router.get("/generate-signed-url", async (req, res) => {
   try {
     const url = await putObjectForBlog();
-    if (!url)
-      return res.status(500).json({ message: "Error generating Signed URL" });
+    if (!url) return res.status(500).json({ message: "Error generating Signed URL" });
 
     return res.status(201).json({ message: "Generated Pre-signed URL", url });
   } catch (error) {
@@ -57,8 +56,7 @@ router.post("/add", async (req, res) => {
 router.post("/edit/:blogId", async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    if (!blogId)
-      return res.status(400).json({ message: "Params not sent properly" });
+    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
 
     const { title, content, _id: userId, coverImageURL } = req.body;
     if (!title || !content || !userId)
@@ -96,8 +94,7 @@ router.post("/edit/:blogId", async (req, res) => {
 router.delete("/delete/:blogId", async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    if (!blogId)
-      return res.status(400).json({ message: "Params not sent properly" });
+    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
 
     await Blog.deleteOne({ _id: blogId });
     return res.status(200).json({ message: "Blog Deleted successfully" });
@@ -110,8 +107,7 @@ router.delete("/delete/:blogId", async (req, res) => {
 router.post("/improve", async (req, res) => {
   try {
     const { content, title } = req.body;
-    if (!content)
-      return res.status(400).json({ message: "No content receicved" });
+    if (!content) return res.status(400).json({ message: "No content receicved" });
 
     const prompt = `
     Given the blog title and raw blog body content, improve the grammar, clarity, and overall writing style. Maintain the original meaning.
@@ -157,9 +153,7 @@ router.get("/getBlogs/:userId", async (req, res) => {
     const user = await User.findOne({ _id: userId }).lean();
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const blogs = await Blog.find({ createdBy: user._id })
-      .sort({ createdAt: 1 })
-      .lean();
+    const blogs = await Blog.find({ createdBy: user._id }).sort({ createdAt: 1 }).lean();
     return res.status(200).json(blogs);
   } catch (error) {
     console.log(error);
@@ -184,8 +178,7 @@ router.get("/:id", async (req, res) => {
 router.post("/comment/add/:blogId", async (req, res) => {
   try {
     const { content, createdBy } = req.body;
-    if (!content || !createdBy)
-      return res.status(400).json({ message: "All fields are required" });
+    if (!content || !createdBy) return res.status(400).json({ message: "All fields are required" });
 
     const blogId = req.params?.blogId;
     if (!blogId) return res.status(404).json({ message: "Params not passed" });
@@ -208,9 +201,7 @@ router.post("/comment/add/:blogId", async (req, res) => {
       .populate("comments.createdBy");
     const reversed = updated.comments.reverse();
 
-    return res
-      .status(200)
-      .json({ message: "Comment added successfully ", comments: reversed });
+    return res.status(200).json({ message: "Comment added successfully ", comments: reversed });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error Adding Comment" });

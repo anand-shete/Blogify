@@ -1,7 +1,7 @@
 import api from "@/api";
 import { BookOpen, Eye } from "lucide-react";
 import { useNavigate } from "react-router";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardFooter, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { setAllBlogs } from "@/features/blogSlice";
 import { useEffect, useState } from "react";
@@ -19,8 +19,6 @@ export default function OurBlogs() {
       try {
         const res = await api.get("/blogs");
         dispatch(setAllBlogs(res.data.blogs));
-      } catch (error) {
-        // console.log("error in getting all blgos", error);
       } finally {
         setLoading(false);
       }
@@ -41,30 +39,82 @@ export default function OurBlogs() {
         Browse every blog ever published — discover stories, tutorials, and insights, all in one
         place.
       </p>
-      <div className="grid min-w-full grid-cols-1 gap-10 text-center lg:grid-cols-2 xl:grid-cols-3">
+      <div className="lg:mx-30 mx-10 grid grid-cols-1 gap-16 text-center lg:grid-cols-2 xl:grid-cols-3">
         {blogs.map(blog => (
           <Card
             key={blog._id}
-            className="hover:scale-102 mx-10 h-fit transition-transform lg:mx-20"
+            className="group border-neutral-600 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
           >
-            <CardHeader>
-              <img
-                src={blog.coverImageURL}
-                alt="image"
-                className="h-full w-full rounded-sm object-contain"
-                onClick={() => navigate(`user/${blog._id}`)}
-              />
-              <CardTitle>{blog.title}</CardTitle>
-            </CardHeader>
-            <CardFooter className="w-full justify-center [&_span]:hidden [&_span]:sm:inline">
-              <Button onClick={() => navigate(`/${blog._id}`)}>
-                <Eye className="mb-[1px]" />
-                <span>View</span>
-              </Button>
-            </CardFooter>
+            <CardContent className="p-0">
+              <div className="relative overflow-hidden">
+                <img
+                  src={blog.coverImageURL}
+                  alt={blog.title}
+                  className="h-48 w-full object-cover object-center transition-transform duration-200 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/10" />
+              </div>
+
+              <div className="p-6">
+                <h3 className="mb-4 line-clamp-2 text-center text-xl font-semibold leading-tight">
+                  {blog.title}
+                </h3>
+
+                <CardFooter className="w-full justify-center [&_span]:hidden [&_span]:sm:inline">
+                  <Button onClick={() => navigate(`/${blog._id}`)}>
+                    <Eye className="mb-[1px]" />
+                    <span>View</span>
+                  </Button>
+                </CardFooter>
+              </div>
+            </CardContent>
           </Card>
         ))}
       </div>
     </div>
   );
 }
+/*
+<CardFooter className="w-full justify-center [&_span]:hidden [&_span]:sm:inline">
+              <Button onClick={() => navigate(`/${blog._id}`)}>
+                <Eye className="mb-[1px]" />
+                <span>View</span>
+              </Button>
+            </CardFooter>
+
+*/
+/*
+<Card
+              key={blog._id}
+              className="group border-neutral-600 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+            >
+              <CardContent className="p-0">
+                <div className="relative overflow-hidden">
+                  <img
+                    src={blog.coverImageURL}
+                    alt={blog.title}
+                    className="h-48 w-full object-cover object-center transition-transform duration-200 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/10" />
+                </div>
+
+                <div className="p-6">
+                  <h3 className="mb-4 line-clamp-2 text-center text-xl font-semibold leading-tight">
+                    {blog.title}
+                  </h3>
+
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate(`/${blog._id}`)}
+                      className="flex-1 border-neutral-200 text-gray-600 hover:bg-neutral-50 hover:text-gray-900"
+                    >
+                      <Eye className="mr-1 h-4 w-4" />
+                      View
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+*/

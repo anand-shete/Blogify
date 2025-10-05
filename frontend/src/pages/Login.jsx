@@ -50,7 +50,6 @@ export default function Login() {
       toast.success(res.data.message);
       navigate("/dashboard");
     } catch (error) {
-      // console.log("error", error.response);
       if (error.status == 404) navigate("/signup");
       toast.error(error.response.data.message || "Login Failed");
     }
@@ -58,7 +57,7 @@ export default function Login() {
 
   return (
     <div className="flex min-w-full flex-col items-center justify-center bg-neutral-200">
-      <Card className="mx-5 my-20 px-5 text-center shadow-2xl shadow-black md:min-w-110">
+      <Card className="md:min-w-110 mx-5 my-20 px-5 text-center shadow-2xl shadow-black">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>Enter your details below to Login</CardDescription>
@@ -98,8 +97,8 @@ export default function Login() {
                 )}
               />
               <Button type="submit">Login</Button>
-              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-1 bg-background px-2 text-muted-foreground">
+              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+                <span className="z-1 bg-background text-muted-foreground relative px-2">
                   Or continue with
                 </span>
               </div>

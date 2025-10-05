@@ -22,9 +22,10 @@ import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
-import { Loader } from "@/components/common";
 import { Brain, Check } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import useEditBlog from "@/hooks/useEditBlog";
+import { Loader } from "@/components/common";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Blog Title required" }),
@@ -39,15 +40,11 @@ export default function EditBlog() {
   const navigate = useNavigate();
   const { blogId } = useParams();
   const user = useSelector(user => user.user);
-  const [loading, setLoading] = useState(true);
   const [generate, setGenerate] = useState("");
   const contentRef = useRef(null);
   const titleRef = useRef(null);
+  const [loading, setLoading] = useState(true);
   const [useAI, setUseAI] = useState(false);
-  const [blog, setBlog] = useState({
-    title: "",
-    content: "",
-  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -58,14 +55,14 @@ export default function EditBlog() {
     },
   });
 
+  const { blog } = useEditBlog();
+
   useEffect(() => {
-    console.log("blog", blog);
     if (blog.content && blog.title) {
       form.reset({
         content: blog.content,
         title: blog.title,
       });
-      setLoading(false);
     }
   }, [blog.content, blog.title]);
 
@@ -75,7 +72,7 @@ export default function EditBlog() {
       let coverImageURL;
 
       if (file) {
-        const res = await api.get("/blog/generateSignedUrl");
+        const res = await api.get("/blog/generate-signed-url");
         const url = res.data.url;
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
@@ -121,7 +118,7 @@ export default function EditBlog() {
   };
 
   return (
-    <div className="m-10 flex min-h-screen min-w-full flex-col sm:m-20">
+    <div className="m-10 flex min-w-full flex-col sm:m-20">
       <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
         <Check />
         Done
@@ -175,7 +172,7 @@ export default function EditBlog() {
                 <Brain className="relative top-[-3px] mr-1 inline text-green-600" />
                 AI Suggestions
               </CardTitle>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-muted-foreground text-sm">
                 Use Artificial Intelligence to refine your content.
               </span>
               <CardDescription>
@@ -199,6 +196,8 @@ export default function EditBlog() {
           </Card>
 
           {/* Tiny MCE editor */}
+          {loading && <Loader />}
+
           <FormField
             control={form.control}
             name="content"

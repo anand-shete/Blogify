@@ -12,17 +12,12 @@ export default function Logout() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get("/user/logout");
+        await api.get("/user/logout");
         navigate("/");
         dispatch(clearUser());
       } catch (error) {}
     })();
   }, []);
 
-  return (
-    <div className="flex min-h-[80vh] min-w-full flex-col items-center justify-center">
-      <h1 className="mb-15 text-2xl sm:text-5xl">Please Wait</h1>
-      <Loader />
-    </div>
-  );
+  return <Loader />;
 }

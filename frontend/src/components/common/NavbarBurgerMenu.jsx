@@ -6,7 +6,7 @@ export default function NavbarBurgerMenu({ isBurgerOpen, toggleBurger }) {
 
   return (
     <div
-      className={`${isBurgerOpen ? "translate-x-0" : "-translate-x-500"} fixed top-0 z-1 flex h-screen w-screen flex-col items-center justify-center space-y-10 bg-neutral-300 transition-transform *:rounded-md *:bg-neutral-800 *:px-10 *:py-2 *:text-white`}
+      className={`${isBurgerOpen ? "translate-x-0" : "-translate-x-500"} z-1 fixed top-0 flex h-screen w-screen flex-col items-center justify-center space-y-10 bg-neutral-300 transition-transform *:rounded-md *:bg-neutral-800 *:px-10 *:py-2 *:text-white`}
     >
       {user._id ? (
         <>
