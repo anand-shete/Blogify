@@ -6,7 +6,6 @@ const setJWT = async (res, token) => {
       maxAge: 1000 * 60 * 60,
       path: "/",
       sameSite: "none",
-      domain: ".blogify.anandshete.online",
     });
   } else {
     res.cookie("token", token, {

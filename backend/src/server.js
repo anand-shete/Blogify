@@ -7,6 +7,8 @@ const blogRoute = require("./routes/blog.routes");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const { RedisStore } = require("connect-redis");
+const { createClient } = require("redis");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -26,8 +28,26 @@ const startServer = async () => {
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
     app.use(cookieParser());
-    app.use(session({ secret: process.env.SESSION_KEY, resave: false, saveUninitialized: false }));
-    
+
+    let redisClient = createClient();
+    redisClient.connect().catch(console.error);
+    let redisStore = new RedisStore({ client: redisClient, prefix: "blogify:", ttl: 86400 });
+
+    // pass cookie options
+    app.use(
+      session({
+        store: redisStore,
+        secret: process.env.SESSION_KEY,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 15,
+          secure: process.env.NODE_ENV === "production",
+        },
+      })
+    );
+
     app.get("/", async (req, res) => {
       return res.status(200).json({ message: "Blogify API Health check passed 🚀" });
     });

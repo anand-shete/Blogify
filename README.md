@@ -59,21 +59,23 @@ npm install
 Create a `.env` file in the `backend` directory and add following variables
 
 ```bash
-MONGO_URI=mongodb://localhost:27017/blogify
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.lnd7qzs.mongodb.net/
 PORT=3000
-NODE_ENV=development
+NODE_ENV=your_NODE_ENV
 JWT_SECRET_KEY=your_JWT_SECRET_KEY
-REDIS_URI=redis://localhost:6379
-FRONTEND_URL=http://localhost:5173
+REDIS_URI=your_REDIS_URI
+FRONTEND_URL=your_FRONTEND_URL
 
 # AWS IAM
 ACCESS_KEY=your_ACCESS_KEY
 SECRET_ACCESS_KEY=your_SECRET_ACCESS_KEY
+BUCKET_NAME=your_BUCKET_NAME
 
 # Google OAuth
 GOOGLE_CLIENT_ID=your_GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET=your_GOOGLE_CLIENT_SECRET
 GOOGLE_REDIRECT_URI=your_GOOGLE_REDIRECT_URI
+SESSION_KEY=your_SESSION_KEY
 
 # Google Gemini API key
 GEMINI_API_KEY=your_GEMINI_API_KEY
@@ -116,3 +118,5 @@ MongoDB connected
 - [ ] Containerize application using Docker
 - [ ] Scale the system to 1000+ concurrent users using AWS services
 - [ ] Create System Design Architecture diagram
+- [ ] Make it Mobile Responsive
+- [ ] Add GitHub Pipeline

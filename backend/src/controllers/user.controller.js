@@ -107,7 +107,6 @@ const googleOAuth = (req, res) => {
     const state = crypto.randomBytes(32).toString("hex");
 
     req.session.state = state;
-
     const authorizedUrl = oauthclient.generateAuthUrl({
       access_type: "offline",
       scope: [
@@ -119,7 +118,6 @@ const googleOAuth = (req, res) => {
       prompt: "consent",
       response_type: "code",
     });
-
     return res.redirect(authorizedUrl);
   } catch (error) {
     console.log("Error generating google authorization url", error);
@@ -131,7 +129,7 @@ const googleOAuthCallback = async (req, res) => {
   try {
     const code = req.query?.code;
     if (req.query?.error || req.query?.state !== req.session.state) {
-      return res.redirect(`${process.env.FRONTEND_URL}/user/login?OAuthError`);
+      return res.redirect(`${process.env.FRONTEND_URL}/login?OAuthError`);
     }
 
     const oauthclient = getGoogleOAuthClient();
@@ -165,7 +163,6 @@ const googleOAuthCallback = async (req, res) => {
     }
 
     await setJWT(res, token);
-
     return res.status(302).redirect(`${process.env.FRONTEND_URL}/dashboard`);
   } catch (error) {
     console.log("error redirecting in google oauth flow", error);
