@@ -1,9 +1,8 @@
 const crypto = require("crypto");
 const User = require("../models/user.model");
-const { setJWT } = require("../utils/setJWT");
 const { putObjectForProfile } = require("../config/aws");
 const { generateUserToken, validateToken } = require("../services/auth");
-const { getGoogleOAuthClient } = require("../utils/oauth.utils");
+const { getGoogleOAuthClient, setJWT } = require("../utils/index.utils");
 
 const checkAuth = async (req, res) => {
   const { email } = req.body;
@@ -128,7 +127,7 @@ const googleOAuth = (req, res) => {
 const googleOAuthCallback = async (req, res) => {
   try {
     const code = req.query?.code;
-    if (req.query?.error || req.query?.state !== req.session.state) {
+    if (req.query?.error || req.query?.state != req.session.state) {
       return res.redirect(`${process.env.FRONTEND_URL}/login?OAuthError`);
     }
 

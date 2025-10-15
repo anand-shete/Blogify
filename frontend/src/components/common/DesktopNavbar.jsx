@@ -6,7 +6,7 @@ export default function DesktopNavbar() {
   const user = useSelector(user => user.user);
 
   return (
-    <div className="**:transition-all **:hover:scale-120 **:hover:underline hidden space-x-10 duration-300 sm:block">
+    <div className="[&_a]:hover:scale-120 [&_a]:duration-600 hidden space-x-10 sm:block [&_a]:underline-offset-2 [&_a]:transition-all [&_a]:hover:underline">
       <Link to="/">Home</Link>
       <Link to="/dashboard">Dashboard</Link>
 

@@ -33,7 +33,7 @@ export default function OurBlogs() {
     <div className="border-b py-10 lg:py-20">
       <h1 className="text-primary mb-4 flex items-center justify-center text-2xl font-semibold lg:text-4xl">
         <BookOpen className="lg:scale-130 mr-3 scale-110" strokeWidth={1.5} />
-        Explore All Blogs
+        Explore Blogs
       </h1>
       <p className="mb-10 text-center">
         Browse every blog ever published — discover stories, tutorials, and insights, all in one
@@ -74,47 +74,3 @@ export default function OurBlogs() {
     </div>
   );
 }
-/*
-<CardFooter className="w-full justify-center [&_span]:hidden [&_span]:sm:inline">
-              <Button onClick={() => navigate(`/${blog._id}`)}>
-                <Eye className="mb-[1px]" />
-                <span>View</span>
-              </Button>
-            </CardFooter>
-
-*/
-/*
-<Card
-              key={blog._id}
-              className="group border-neutral-600 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-            >
-              <CardContent className="p-0">
-                <div className="relative overflow-hidden">
-                  <img
-                    src={blog.coverImageURL}
-                    alt={blog.title}
-                    className="h-48 w-full object-cover object-center transition-transform duration-200 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/10" />
-                </div>
-
-                <div className="p-6">
-                  <h3 className="mb-4 line-clamp-2 text-center text-xl font-semibold leading-tight">
-                    {blog.title}
-                  </h3>
-
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => navigate(`/${blog._id}`)}
-                      className="flex-1 border-neutral-200 text-gray-600 hover:bg-neutral-50 hover:text-gray-900"
-                    >
-                      <Eye className="mr-1 h-4 w-4" />
-                      View
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-*/
