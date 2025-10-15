@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { addComment } from "@/features/blogSlice";
 import { setBlog } from "@/features/blogSlice";
-import { NavLink, useParams } from "react-router";
-import { setUser } from "@/features/userSlice";
+import { NavLink, useNavigate, useParams } from "react-router";
 import { Label } from "@/components/ui/label";
 import { Send } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function Blog() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { blogId } = useParams();
   const user = useSelector(state => state.user);
   const blog = useSelector(state => state.blogs[0]);
@@ -29,17 +29,10 @@ export default function Blog() {
         dispatch(setBlog(res.data.blog));
       } catch (error) {
         toast.error(error.response.data.message);
+        navigate("/dashboard");
       } finally {
         setLoading(false);
       }
-    })();
-
-    // Set user, only if client has token
-    (async () => {
-      try {
-        const res = await api.get("/user/auth/status");
-        dispatch(setUser(res.data));
-      } catch (error) {}
     })();
   }, [dispatch, user]);
 

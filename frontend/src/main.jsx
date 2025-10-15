@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { createRoot } from "react-dom/client";
 import { lazy, StrictMode } from "react";
 import { createRoutesFromElements, createBrowserRouter, Route, RouterProvider } from "react-router";
+import { Toaster } from "./components/ui/sonner";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -28,12 +29,12 @@ const router = createBrowserRouter(
       <Route path="login" element={<Login />} />
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="logout" element={<Logout />} />
+      <Route path="privacy-policy" element={<SitePolicy />} />
+      <Route path="terms-of-service" element={<TermsOfService />} />
       <Route path="blog/add" element={<AddBlog />} />
       <Route path="blog/edit/:blogId" element={<EditBlog />} />
       <Route path="blog/delete/:blogId" element={<DeleteBlog />} />
-      <Route path=":blogId" element={<Blog />} />
-      <Route path="/privacy-policy" element={<SitePolicy />} />
-      <Route path="/terms-of-service" element={<TermsOfService />} />
+      <Route path="blog/view/:blogId" element={<Blog />} />
       <Route path="*" element={<NotFound />} />
     </Route>,
   ),
@@ -43,6 +44,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
       <RouterProvider router={router} />
+      <Toaster />
     </Provider>
   </StrictMode>,
 );

@@ -9,7 +9,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const { RedisStore } = require("connect-redis");
 const { createClient } = require("redis");
-const { cookieOptions } = require("./utils/index.utils");
+const { cookieOptions, devCookieOpts, prodCookieOpts } = require("./utils/index.utils");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -41,7 +41,7 @@ const startServer = async () => {
         secret: process.env.SESSION_KEY,
         resave: false,
         saveUninitialized: false,
-        cookie: cookieOptions,
+        cookie: process.env.NODE_ENV === "production" ? prodCookieOpts : devCookieOpts,
       })
     );
 

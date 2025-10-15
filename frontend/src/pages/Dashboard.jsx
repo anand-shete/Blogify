@@ -2,9 +2,7 @@ import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import useFetchBlogs from "@/hooks/useFetchBlogs";
-import DashboardLoader from "@/components/Dashboard/DashboardLoader";
-import DashboardSection from "@/components/Dashboard/DashboardSection";
-import { Toaster } from "sonner";
+import { DashboardSection, DashboardLoader } from "@/components/Dashboard";
 
 export default function UserHome() {
   const { blogs, loading, user } = useFetchBlogs();

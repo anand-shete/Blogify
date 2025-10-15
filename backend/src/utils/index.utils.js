@@ -24,11 +24,16 @@ const setJWT = async (res, token) => {
   }
 };
 
-const cookieOptions = {
+const prodCookieOpts = {
   httpOnly: true,
   maxAge: 1000 * 60 * 15,
   sameSite: "none",
   secure: process.env.NODE_ENV === "production",
 };
 
-module.exports = { getGoogleOAuthClient, setJWT, cookieOptions };
+const devCookieOpts = {
+  httpOnly: true,
+  maxAge: 1000 * 60 * 15,
+};
+
+module.exports = { getGoogleOAuthClient, setJWT, prodCookieOpts, devCookieOpts };

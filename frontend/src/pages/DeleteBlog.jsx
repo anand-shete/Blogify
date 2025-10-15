@@ -2,12 +2,10 @@ import api from "@/api";
 import { Loader } from "@/components/common";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 export default function DeleteBlog() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { blogId } = useParams();
 
   useEffect(() => {
@@ -16,8 +14,7 @@ export default function DeleteBlog() {
         const res = await api.delete(`/blog/delete/${blogId}`);
         toast.success(res.data.message);
         navigate("/dashboard");
-      } catch (error) {
-      }
+      } catch (error) {}
     })();
   }, []);
 

@@ -1,9 +1,7 @@
 import { useState } from "react";
-import NavbarBurgerMenu from "./NavbarBurgerMenu";
-import NavbarLogo from "./NavbarLogo";
-import DesktopNavbar from "./DesktopNavbar";
 import { Button } from "@/components/ui/button";
 import { AlignJustify, X } from "lucide-react";
+import { NavbarLogo, DesktopNavbar, NavbarBurgerMenu } from ".";
 
 export default function Navbar() {
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);

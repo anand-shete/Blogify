@@ -68,8 +68,10 @@ export default function AddBlog() {
   });
   const submit = async data => {
     try {
+      setLoading(true);
       const file = data?.blogCoverImage?.[0];
       let coverImageURL;
+
       if (file) {
         const res = await api.get("/blog/generate-signed-url");
         const url = res.data.url;
@@ -79,15 +81,19 @@ export default function AddBlog() {
         });
         coverImageURL = url.split("?")[0];
       }
+
       const res = await api.post("/blog/add", {
         ...data,
         coverImageURL,
         _id: user._id,
       });
-      navigate("/dashboard");
       toast.success(res.data.message);
+      navigate("/dashboard");
     } catch (error) {
+      console.log("here\n\n", error);
       toast.error(error.respose.data.message || "Some Error Occured");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -165,34 +171,6 @@ export default function AddBlog() {
               </FormItem>
             )}
           />
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                <Brain className="text-primary relative top-[-3px] mr-2 inline" />
-                AI Suggestions
-              </CardTitle>
-              <span className="text-muted-foreground text-sm">
-                Use Artificial Intelligence to refine your content.
-              </span>
-              <CardDescription>
-                <Button
-                  className="mt-4 transition-all duration-200 hover:scale-110"
-                  onClick={enchance}
-                  type="button"
-                >
-                  Get Suggestions
-                </Button>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {useAI ? (
-                <p>Please Wait...</p>
-              ) : (
-                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{generate}</ReactMarkdown>
-              )}
-            </CardContent>
-          </Card>
 
           {loading && <Loader />}
           {/* Tiny MCE editor */}

@@ -61,7 +61,7 @@ export default function OurBlogs() {
                 </h3>
 
                 <CardFooter className="w-full justify-center [&_span]:hidden [&_span]:sm:inline">
-                  <Button onClick={() => navigate(`/${blog._id}`)}>
+                  <Button onClick={() => navigate(`/blog/view/${blog._id}`)}>
                     <Eye className="mb-[1px]" />
                     <span>View</span>
                   </Button>

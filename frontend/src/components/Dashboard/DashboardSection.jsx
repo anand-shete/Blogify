@@ -41,7 +41,7 @@ const DashboardSection = ({ blogs }) => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => navigate(`/${blog._id}`)}
+                      onClick={() => navigate(`/blog/view/${blog._id}`)}
                       className="flex-1 border-neutral-200 text-gray-600 hover:bg-neutral-50 hover:text-gray-900"
                     >
                       <Eye className="mr-1 h-4 w-4" />
