@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Store earlier .env
 mv ~/blogify/.env ~
 rm -r ~/blogify
@@ -10,10 +11,15 @@ mv ~/Blogify/backend ~/blogify
 cd blogify
 npm install
 
-# Move .env to correct place
+# Move .env file to correct location
 mv ~/.env .
 
 
-# Reload PM2 and Nginx
-pm2 reload blogify
+# Delete unused directories and processes
+rm -r ~/Blogify
+pm2 delete blogify
+
+
+# Start new processes
+pm2 start npm --name "blogify" -- start
 sudo nginx -s reload

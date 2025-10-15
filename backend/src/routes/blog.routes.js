@@ -23,8 +23,9 @@ router.get("/generate-signed-url", async (req, res) => {
 router.post("/add", async (req, res) => {
   try {
     const { title, content, _id: userId, coverImageURL } = req.body;
-    if (!title || !content || !userId)
+    if (!title || !content || !userId) {
       return res.status(400).json({ message: "All fields are required" });
+    }
 
     const sanitizedContent = sanitizeHtml(content, {
       allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
