@@ -16,7 +16,7 @@ mv ~/.env .
 
 
 # Delete unused directories and processes
-sudo rm -rf ~/Blogify
+rm -rf ~/Blogify
 pm2 delete blogify
 
 
