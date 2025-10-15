@@ -13,6 +13,7 @@ npm install
 
 # Move .env file to correct location
 mv ~/.env .
+cd ~
 
 
 # Delete unused directories and processes

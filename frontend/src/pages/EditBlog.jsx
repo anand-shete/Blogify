@@ -87,6 +87,7 @@ export default function EditBlog() {
       navigate("/dashboard");
       toast.success(res.data.message);
     } catch (error) {
+      // fixme error ocurring here
       toast.error(error.respose.data.message || "Some Error Occured");
     }
   };
