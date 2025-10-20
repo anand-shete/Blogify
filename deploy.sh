@@ -23,4 +23,7 @@ pm2 delete blogify
 
 # Start new processes
 pm2 start npm --name "blogify" -- start
-sudo nginx -s reload
+
+
+# fixme change status of blogify to pruction on google cloud 
+# fixme Add Blog not working

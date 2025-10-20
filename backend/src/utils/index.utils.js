@@ -10,21 +10,14 @@ const getGoogleOAuthClient = () => {
 
 const setJWT = async (res, token) => {
   if (process.env.NODE_ENV === "production") {
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 1000 * 60 * 60,
-      sameSite: "none",
-    });
+    res.cookie("token", token, prodCookieOpts);
   } else {
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60,
-    });
+    res.cookie("token", token, devCookieOpts);
   }
 };
 
 const prodCookieOpts = {
+  domain: process.env.COOKIE_DOMAIN,
   httpOnly: true,
   maxAge: 1000 * 60 * 15,
   sameSite: "none",
