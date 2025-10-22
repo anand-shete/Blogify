@@ -20,4 +20,7 @@ const getAllBlogs = async (req, res) => {
   }
 };
 
-module.exports = { getAllBlogs };
+const healthCheck = async (req, res) => {
+  return res.status(200).json({ message: "Blogify API Health check passed 🚀" });
+};
+module.exports = { getAllBlogs, healthCheck };

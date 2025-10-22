@@ -45,9 +45,6 @@ const startServer = async () => {
       })
     );
 
-    app.get("/", async (req, res) => {
-      return res.status(200).json({ message: "Blogify API Health check passed 🚀" });
-    });
 
     app.use("/api/v1", baseRoute);
     app.use("/api/v1/user", userRoute);
