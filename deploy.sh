@@ -34,4 +34,5 @@ pm2 delete blogify || true
 cd blogify
 pm2 start npm --name "blogify" -- start
 
+
 echo "=== Deployment Finished 🎉 ==="
