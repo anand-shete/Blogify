@@ -1,29 +1,37 @@
 #!/bin/bash
 
 
-# Store earlier .env
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+echo "=== Deployment Started ==="
+
+# Preserve .env file
+cd ~
 mv ~/blogify/.env ~
 rm -r ~/blogify
 
-cd ~
+
+# Clone the repository
 git clone https://github.com/anand-shete/Blogify
 mv ~/Blogify/backend ~/blogify
+
+
+# Install dependencies
 cd blogify
-npm install
-
-# Move .env file to correct location
+npm ci --omit=dev
 mv ~/.env .
-cd ~
 
 
-# Delete unused directories and processes
-rm -rf ~/Blogify
-pm2 delete blogify
+# Cleanup step
+rm -rf ~/Blogify ~/deploy.sh
+pm2 delete blogify || true
+
 
 
 # Start new processes
+cd blogify
 pm2 start npm --name "blogify" -- start
 
-
-# fixme change status of blogify to pruction on google cloud 
-# fixme Add Blog not working
+echo "=== Deployment Finished 🎉 ==="
