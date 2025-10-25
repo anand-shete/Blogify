@@ -1,6 +1,10 @@
 const Blog = require("../models/blog.model");
 const { redis } = require("../config/redis");
 
+const healthCheck = async (req, res) => {
+  return res.status(200).json({ message: "Blogify API Health check passed 🚀" });
+};
+
 const getAllBlogs = async (req, res) => {
   try {
     const cachedBlogs = await redis.get("blogs");
@@ -20,7 +24,4 @@ const getAllBlogs = async (req, res) => {
   }
 };
 
-const healthCheck = async (req, res) => {
-  return res.status(200).json({ message: "Blogify API Health check passed 🚀" });
-};
 module.exports = { getAllBlogs, healthCheck };

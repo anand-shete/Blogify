@@ -89,7 +89,6 @@ export default function AddBlog() {
       toast.success(res.data.message);
       navigate("/dashboard");
     } catch (error) {
-      console.log("here\n\n", error);
       toast.error("Some Error Occured");
     } finally {
       setLoading(false);
