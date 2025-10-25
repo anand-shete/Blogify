@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     profileImageURL: {
       type: String,
-      default: "https://anandshete-blogify.s3.ap-south-1.amazonaws.com/default/profile-pic.png",
+      default: "https://blogify-anandshete.s3.ap-south-1.amazonaws.com/default/profile-pic.png",
     },
     authProvider: {
       type: String,

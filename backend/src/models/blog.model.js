@@ -12,7 +12,7 @@ const blogSchema = new mongoose.Schema(
     },
     coverImageURL: {
       type: String,
-      default: "https://anandshete-blogify.s3.ap-south-1.amazonaws.com/default/blog-image.webp",
+      default: "https://blogify-anandshete.s3.ap-south-1.amazonaws.com/default/blog-image.webp",
     },
     comments: [
       {

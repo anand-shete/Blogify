@@ -32,7 +32,7 @@ const startServer = async () => {
 
     let redisClient = createClient();
     redisClient.connect().catch(console.error);
-    let redisStore = new RedisStore({ client: redisClient, prefix: "blogify:", ttl: 86400 });
+    let redisStore = new RedisStore({ client: redisClient, prefix: "blogify:", ttl: 3600 });
 
     // pass cookie options
     app.use(
@@ -41,7 +41,6 @@ const startServer = async () => {
         secret: process.env.SESSION_KEY,
         resave: false,
         saveUninitialized: false,
-        cookie: process.env.NODE_ENV === "production" ? prodCookieOpts : devCookieOpts,
       })
     );
 

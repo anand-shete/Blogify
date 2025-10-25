@@ -74,7 +74,10 @@ export default function AddBlog() {
 
       if (file) {
         const res = await api.get("/blog/generate-signed-url");
+        console.log("res", res);
+
         const url = res.data.url;
+        console.log("url", url);
 
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
@@ -91,7 +94,7 @@ export default function AddBlog() {
       navigate("/dashboard");
     } catch (error) {
       console.log("here\n\n", error);
-      toast.error(error.respose.data.message || "Some Error Occured");
+      toast.error("Some Error Occured");
     } finally {
       setLoading(false);
     }
