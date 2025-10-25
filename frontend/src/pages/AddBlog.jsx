@@ -125,7 +125,7 @@ export default function AddBlog() {
     <div className="m-10 flex min-h-screen flex-col sm:m-20">
       <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
         <Plus />
-        Add Blog
+        Post
       </Button>
       <Form {...form} className="">
         <form onSubmit={form.handleSubmit(submit)} className="flex flex-col space-y-10">
@@ -204,7 +204,7 @@ export default function AddBlog() {
           />
           <Button type="submit" className="max-w-[20vh] hover:scale-110">
             <Plus />
-            Add Blog
+            Post
           </Button>
         </form>
       </Form>

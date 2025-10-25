@@ -87,7 +87,6 @@ export default function EditBlog() {
       navigate("/dashboard");
       toast.success(res.data.message);
     } catch (error) {
-      // fixme error ocurring here
       toast.error(error.respose.data.message || "Some Error Occured");
     }
   };
@@ -119,8 +118,8 @@ export default function EditBlog() {
   };
 
   return (
-    <div className="m-10 flex min-w-full flex-col sm:m-20">
-      <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
+    <div className="flex min-w-full flex-col p-10 sm:p-20">
+      <Button className="mb-5 self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
         <Check />
         Done
       </Button>

@@ -25,6 +25,10 @@ export default function FAQSection() {
         "Yes. Our TinyMCE editor supports images, videos, GIFs, links, and other embedded content formats.",
     },
     {
+      question: "Does Blogify support Markdown?",
+      answer: "Yes. Blogify fully supports Markdown, text highlighting and code insertions.",
+    },
+    {
       question: "Can I edit or delete my blogs later?",
       answer:
         "Yes, you can update or delete any of your published blogs anytime. Full control stays with you.",
