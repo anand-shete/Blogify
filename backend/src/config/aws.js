@@ -19,10 +19,11 @@ const putObjectForProfile = async type => {
   return await getSignedUrl(client, command, { expiresIn: 600 });
 };
 
-const putObjectForBlog = async () => {
+const putObjectForBlog = async type => {
   const command = new PutObjectCommand({
     Bucket: process.env.BUCKET_NAME,
     Key: `users/blogs/${Math.random()}`,
+    ContentType: type,
   });
   return await getSignedUrl(client, command, { expiresIn: 600 });
 };

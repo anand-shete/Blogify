@@ -11,7 +11,8 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 router.get("/generate-signed-url", async (req, res) => {
   try {
-    const url = await putObjectForBlog();
+    const type = req.body.type;
+    const url = await putObjectForBlog(type);
     if (!url) return res.status(500).json({ message: "Error generating Signed URL" });
 
     return res.status(201).json({ message: "Generated Pre-signed URL", url });

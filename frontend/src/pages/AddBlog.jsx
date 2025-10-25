@@ -71,15 +71,10 @@ export default function AddBlog() {
       setLoading(true);
       const file = data?.blogCoverImage?.[0];
       let coverImageURL = null;
-      console.log("file", file);
 
       if (file) {
-        const res = await api.get("/blog/generate-signed-url");
-        console.log("res", res);
-
+        const res = await api.post("/blog/generate-signed-url", { type: file.type });
         const url = res.data.url;
-        console.log("url", url);
-
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
         });
