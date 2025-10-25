@@ -33,6 +33,6 @@ pm2 delete blogify || true
 # Start new processes
 cd blogify
 pm2 start npm --name "blogify" -- start
-
+sudo nginx -s reload
 
 echo "=== Deployment Finished 🎉 ==="

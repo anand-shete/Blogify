@@ -25,7 +25,6 @@ const formSchema = z.object({
 export default function Login() {
   const navigate = useNavigate();
   const { search } = useLocation();
-
   if (search.split("?")[1] === "OAuthError") {
     toast.error("Google Authentication Error");
   }

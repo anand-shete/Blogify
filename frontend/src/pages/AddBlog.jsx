@@ -70,7 +70,7 @@ export default function AddBlog() {
     try {
       setLoading(true);
       const file = data?.blogCoverImage?.[0];
-      let coverImageURL;
+      let coverImageURL = null;
 
       if (file) {
         const res = await api.get("/blog/generate-signed-url");

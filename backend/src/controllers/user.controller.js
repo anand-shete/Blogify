@@ -117,6 +117,7 @@ const googleOAuth = (req, res) => {
       prompt: "consent",
       response_type: "code",
     });
+
     return res.redirect(authorizedUrl);
   } catch (error) {
     console.log("Error generating google authorization url", error);
@@ -162,7 +163,7 @@ const googleOAuthCallback = async (req, res) => {
     }
 
     await setJWT(res, token);
-    return res.status(302).redirect(`${process.env.FRONTEND_URL}/dashboard`);
+    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
   } catch (error) {
     console.log("error redirecting in google oauth flow", error);
     return res.redirect(`${process.env.FRONTEND_URL}/login?OAuthError`);
