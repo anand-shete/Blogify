@@ -9,10 +9,9 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const { RedisStore } = require("connect-redis");
 const { createClient } = require("redis");
-const { devCookieOpts, prodCookieOpts } = require("./utils/index.utils");
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT);
 
 const startServer = async () => {
   try {

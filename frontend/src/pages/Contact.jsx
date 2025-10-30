@@ -1,4 +1,4 @@
-// fixme
+// fixme change to ViewAllBlogs
 const Contact = () => {
   return (
     <div>

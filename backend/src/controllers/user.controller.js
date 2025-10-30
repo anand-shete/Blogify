@@ -145,7 +145,7 @@ const googleOAuthCallback = async (req, res) => {
     const { name, email, picture } = userInfo;
 
     // check if user exists in database and create if doesn't
-    let user;
+    let user = null;
     user = await User.findOne({ name, email, authProvider: "google" }).lean();
     if (!user) {
       user = await User.create({

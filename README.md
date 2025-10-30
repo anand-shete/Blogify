@@ -3,6 +3,9 @@
 Blogify is a modern, interactive blogging platform designed to allow users to create, share, and engage with blog posts. With a sleek UI, secure authentication, and AI-powered features, Blogify offers a seamless experience for both readers and writers.
 
 ## System Design
+Blogify's **current production architecture**, using Amazon Web Services for a full fledged deployment.  
+![Blogify archirecture](./aws.png)
+
 
 ## Live Demo
 
