@@ -3,22 +3,23 @@
 Blogify is a modern, interactive blogging platform designed to allow users to create, share, and engage with blog posts. With a sleek UI, secure authentication, and AI-powered features, Blogify offers a seamless experience for both readers and writers.
 
 ## System Design
-Blogify's **current production architecture**, using Amazon Web Services for a full fledged deployment.  
+Blogify's **current production architecture** uses Amazon Web Services for a full fledged deployment.<br><br>
 ![Blogify archirecture](./aws.png)
 
 
 ## Live Demo
 
 If you directly want to view this project:
-[Blogify](https://blogify.anandshete.online)
+<a href="https://blogify.anandshete.dev" target="_blank">Blogify</a>
+
 
 ## Features
 
-- **Redis**: Used Redis to cache landing page blogs.
+- **Redis**: Used Redis to cache blogs on the landing page.
 - **Blog Creation**: Add blogs using a rich Text Editor and Gemini 2.0 Flash for AI suggestions.
 - **Authentication**: Supports both JWT and Google OAuth 2.0 for secure login and registration.
 - **Images**: All images stored in S3 Buckets with presigned URLs for uploads.
-- **Nginx**: Acts as a reverse proxy for backend APIs and serves static files.
+- **Nginx**: Acts as a reverse proxy for backend APIs and serves APIs.
 
 ## Tech Stack
 
@@ -119,7 +120,7 @@ MongoDB connected
 ### Future Implementation
 
 - [ ] Containerize application using Docker
-- [ ] Scale the system to 1000+ concurrent users using AWS services
-- [ ] Create System Design Architecture diagram
-- [ ] Make it Mobile Responsive
-- [ ] Add GitHub Pipeline
+
+---
+
+End of README
