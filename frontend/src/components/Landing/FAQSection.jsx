@@ -39,7 +39,7 @@ export default function FAQSection() {
     <section className="bg-white px-4 py-16">
       <div className="mx-6 max-w-4xl lg:mx-auto">
         <div className="mb-12 text-center">
-          <h2 className="text-primary mb-4 flex items-center justify-center text-2xl font-semibold lg:text-4xl">
+          <h2 className="text-primary mb-4 flex items-center justify-center tracking-tight text-2xl font-semibold lg:text-4xl">
             <CircleQuestionMark className="mr-2 scale-110" strokeWidth={1.5} />
             Frequently Asked Questions
           </h2>

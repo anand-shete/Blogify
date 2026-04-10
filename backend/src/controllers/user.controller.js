@@ -3,6 +3,7 @@ const User = require("../models/user.model");
 const { putObjectForProfile } = require("../config/aws");
 const { generateUserToken, validateToken } = require("../services/auth");
 const { getGoogleOAuthClient, setJWT } = require("../utils/index.utils");
+const Blog = require("../models/blog.model");
 
 const checkAuth = async (req, res) => {
   const { email } = req.body;
@@ -170,6 +171,25 @@ const googleOAuthCallback = async (req, res) => {
   }
 };
 
+const getAllBlogsOfUser = async (req, res) => {
+  try {
+    const userId = req.params?.userId;
+    if (!userId) {
+      return res.status(404).json({ message: "Params not received" });
+    }
+
+    const user = await User.findOne({ _id: userId }).lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const blogs = await Blog.find({ createdBy: user._id }).sort({ createdAt: 1 }).lean();
+
+    return res.status(200).json(blogs);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Error fetching blogs of user" });
+  }
+};
+
 module.exports = {
   checkAuth,
   generateSignedUrl,
@@ -179,4 +199,5 @@ module.exports = {
   authStatus,
   googleOAuth,
   googleOAuthCallback,
+  getAllBlogsOfUser,
 };

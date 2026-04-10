@@ -70,7 +70,7 @@ export default function Blog() {
           <img
             src={blog.coverImageURL}
             alt="coverImageURL"
-            className="m-10 mx-auto border border-neutral-500 inline-block rounded-md sm:max-w-[50vw]"
+            className="m-10 mx-auto border border-neutral-500 inline-block rounded-md sm:max-w-[30vw]"
           />
           <div
             dangerouslySetInnerHTML={{ __html: blog.content }}

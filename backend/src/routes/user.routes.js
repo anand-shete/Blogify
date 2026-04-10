@@ -8,6 +8,7 @@ const {
   authStatus,
   googleOAuth,
   googleOAuthCallback,
+  getAllBlogsOfUser
 } = require("../controllers/user.controller");
 
 const router = Router();
@@ -20,5 +21,6 @@ router.get("/logout", logout);
 router.get("/auth/status", authStatus);
 router.get("/auth/google", googleOAuth);
 router.get("/auth/google/callback", googleOAuthCallback);
+router.get("/:userId/blogs", getAllBlogsOfUser);
 
 module.exports = router;

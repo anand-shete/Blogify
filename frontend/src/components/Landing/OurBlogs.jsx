@@ -1,6 +1,6 @@
 import api from "@/api";
-import { BookOpen, Eye } from "lucide-react";
-import { useNavigate } from "react-router";
+import { ArrowUpRight, BookOpen, Eye } from "lucide-react";
+import { Link, useNavigate } from "react-router";
 import { Card, CardFooter, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { setAllBlogs } from "@/features/blogSlice";
@@ -31,11 +31,14 @@ export default function OurBlogs() {
 
   return (
     <div className="border-b py-10 lg:py-20">
-      <h1 className="text-primary mb-4 flex items-center justify-center text-2xl font-semibold lg:text-4xl">
-        <BookOpen className="lg:scale-130 mr-3 scale-110" strokeWidth={1.5} />
-        Explore Blogs
-      </h1>
-      <p className="mb-10 text-center">
+      <Link to="discover">
+        <h1 className="text-primary mb-4 flex items-center justify-center text-2xl font-semibold tracking-tight lg:text-4xl">
+          <BookOpen className="lg:scale-130 mr-3 scale-110" strokeWidth={1.5} />
+          Discover Blogs
+          <ArrowUpRight size={24} />
+        </h1>
+      </Link>
+      <p className="mb-10 text-center text-sm">
         Browse every blog ever published — discover stories, tutorials, and insights, all in one
         place.
       </p>

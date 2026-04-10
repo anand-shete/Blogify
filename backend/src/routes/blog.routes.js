@@ -5,19 +5,19 @@ const {
   addComment,
   deleteBlogs,
   editBlogs,
-  getAllBlogsOfUser,
   getBlog,
   improveContent,
+  getAllBlogs,
 } = require("../controllers/blog.controller");
 const router = express.Router();
 
+router.get("/", getAllBlogs);
 router.post("/generate-signed-url", generateSignedUrlForBlogs);
 router.post("/add", addBlog);
+router.post("/improve", improveContent);
+router.get("/:id", getBlog);
 router.post("/edit/:blogId", editBlogs);
 router.delete("/delete/:blogId", deleteBlogs);
-router.post("/improve", improveContent);
-router.get("/getBlogs/:userId", getAllBlogsOfUser);
-router.get("/:id", getBlog);
 router.post("/comment/add/:blogId", addComment);
 
 module.exports = router;

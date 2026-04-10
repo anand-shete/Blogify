@@ -9,13 +9,7 @@ import remarkBreaks from "remark-breaks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -38,17 +32,14 @@ const formSchema = z.object({
   content: z.string().min(1, { message: "Content cannot be empty" }),
   blogCoverImage: z
     .instanceof(FileList)
-    .refine(
-      (files) => !files || files[0].type.startsWith("image"),
-      "File must be an image",
-    )
+    .refine(files => !files || files[0].type.startsWith("image"), "File must be an image")
     .optional(),
 });
 
 export default function AddBlog() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((user) => user.user);
+  const user = useSelector(user => user.user);
   const [loading, setLoading] = useState(true);
   const [generate, setGenerate] = useState("");
   const contentRef = useRef(null);
@@ -75,7 +66,7 @@ export default function AddBlog() {
       blogCoverImage: undefined,
     },
   });
-  const submit = async (data) => {
+  const submit = async data => {
     try {
       setLoading(true);
       const file = data?.blogCoverImage?.[0];
@@ -134,18 +125,12 @@ export default function AddBlog() {
 
   return (
     <div className="m-10 flex min-h-screen flex-col sm:m-20">
-      <Button
-        className="mb-5 w-fit self-end hover:scale-110"
-        onClick={form.handleSubmit(submit)}
-      >
+      <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
         <Plus />
         Post
       </Button>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(submit)}
-          className="flex flex-col space-y-10"
-        >
+        <form onSubmit={form.handleSubmit(submit)} className="flex flex-col space-y-10">
           <FormField
             control={form.control}
             name="title"
@@ -158,7 +143,7 @@ export default function AddBlog() {
                     type="text"
                     className="p-3"
                     {...field}
-                    ref={(el) => {
+                    ref={el => {
                       field.ref(el); // attach RHF's ref
                       titleRef.current = el; // attach our custom ref
                     }}
@@ -175,12 +160,13 @@ export default function AddBlog() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="ml-1 text-2xl">
-                  Cover Image (optional)
+                  Cover Image
+                  <p className="mt-2 text-sm text-neutral-600">optional</p>
                 </FormLabel>
                 <FormControl>
                   <Input
                     type="file"
-                    onChange={(e) => field.onChange(e.target.files)}
+                    onChange={e => field.onChange(e.target.files)}
                     className="cursor-pointer file:mr-5"
                   />
                 </FormControl>
@@ -191,10 +177,7 @@ export default function AddBlog() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">
-                <Bot
-                  className="relative top-[-3px] mr-1 inline text-primary"
-                  size={30}
-                />
+                <Bot className="text-primary relative top-[-3px] mr-1 inline" size={30} />
                 AI Suggestions
               </CardTitle>
               <span className="text-muted-foreground text-sm">
@@ -202,7 +185,7 @@ export default function AddBlog() {
               </span>
               <CardDescription>
                 <Button
-                  className="transition-all mt-2 duration-200 hover:scale-110"
+                  className="mt-2 transition-all duration-200 hover:scale-110"
                   onClick={getAiSuggestions}
                   type="button"
                 >
@@ -212,7 +195,7 @@ export default function AddBlog() {
             </CardHeader>
             <CardContent>
               {useAI ? (
-                <div className="flex space-x-4 ">
+                <div className="flex space-x-4">
                   <LoaderCircle className="animate-spin" />
                   <p className="text-neutral-700">
                     Analyzing your content and generating suggestions...

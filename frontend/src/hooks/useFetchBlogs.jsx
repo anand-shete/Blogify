@@ -28,7 +28,7 @@ const useFetchBlogs = () => {
     if (user._id) {
       (async () => {
         try {
-          const res = await api.get(`/blog/getBlogs/${user._id}`);
+          const res = await api.get(`/user/${user._id}/blogs`);
           dispatch(setAllBlogs(res.data));
         } catch (error) {
           toast.error(error.response.data.message);

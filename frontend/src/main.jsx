@@ -19,7 +19,7 @@ const Blog = lazy(() => import("./pages/Blog"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SitePolicy = lazy(() => import("./pages/SitePolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
-const Contact = lazy(() => import("./pages/Contact"));
+const DiscoverBlogs = lazy(() => import("./pages/DiscoverBlogs"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,7 +28,7 @@ const router = createBrowserRouter(
       <Route path="signup" element={<Signup />} />
       <Route path="login" element={<Login />} />
       <Route path="dashboard" element={<Dashboard />} />
-      <Route path="contact" element={<Contact />} />
+      <Route path="discover" element={<DiscoverBlogs />} />
       <Route path="logout" element={<Logout />} />
       <Route path="privacy-policy" element={<SitePolicy />} />
       <Route path="terms-of-service" element={<TermsOfService />} />

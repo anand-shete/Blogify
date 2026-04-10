@@ -8,10 +8,11 @@ export default function DesktopNavbar() {
   return (
     <div className="[&_a]:hover:scale-120 [&_a]:duration-600 hidden space-x-10 sm:block [&_a]:underline-offset-2 [&_a]:transition-all [&_a]:hover:underline">
       <Link to="/">Home</Link>
-      <Link to="/dashboard">Dashboard</Link>
+      <Link to="/discover">Discover</Link>
 
       {user._id ? (
         <>
+          <Link to="/dashboard">Dashboard</Link>
           <Link to="/blog/add">Add Blog</Link>
           <Link to="/logout">Logout</Link>
         </>

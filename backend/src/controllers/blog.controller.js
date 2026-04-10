@@ -11,8 +11,7 @@ const generateSignedUrlForBlogs = async (req, res) => {
   try {
     const type = req.body.type;
     const url = await putObjectForBlog(type);
-    if (!url)
-      return res.status(500).json({ message: "Error generating Signed URL" });
+    if (!url) return res.status(500).json({ message: "Error generating Signed URL" });
 
     return res.status(201).json({ message: "Generated Pre-signed URL", url });
   } catch (error) {
@@ -57,8 +56,7 @@ const addBlog = async (req, res) => {
 const editBlogs = async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    if (!blogId)
-      return res.status(400).json({ message: "Params not sent properly" });
+    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
 
     const { title, content, _id: userId, coverImageURL } = req.body;
     if (!title || !content || !userId)
@@ -153,26 +151,6 @@ const improveContent = async (req, res) => {
   }
 };
 
-const getAllBlogsOfUser = async (req, res) => {
-  try {
-    const userId = req.params?.userId;
-    if (!userId) {
-      return res.status(404).json({ message: "Params not received" });
-    }
-
-    const user = await User.findOne({ _id: userId }).lean();
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    const blogs = await Blog.find({ createdBy: user._id })
-      .sort({ createdAt: 1 })
-      .lean();
-    return res.status(200).json(blogs);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Error fetching blogs of user" });
-  }
-};
-
 const getBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id)
@@ -187,11 +165,23 @@ const getBlog = async (req, res) => {
   }
 };
 
+const getAllBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({})
+      .sort({ createdAt: 1 })
+      .select("title content coverImageURL")
+      .lean();
+    return res.status(200).json(blogs);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Error getting blogs" });
+  }
+};
+
 const addComment = async (req, res) => {
   try {
     const { content, createdBy } = req.body;
-    if (!content || !createdBy)
-      return res.status(400).json({ message: "All fields are required" });
+    if (!content || !createdBy) return res.status(400).json({ message: "All fields are required" });
 
     const blogId = req.params?.blogId;
     if (!blogId) return res.status(404).json({ message: "Params not passed" });
@@ -199,14 +189,7 @@ const addComment = async (req, res) => {
     const blog = await Blog.findById(blogId).select("comments").lean();
     if (!blog) return res.status(404).json({ message: "Blog Not Found" });
 
-    await Blog.updateOne(
-      { _id: blogId },
-      {
-        $push: {
-          comments: { content, blogId, createdBy },
-        },
-      },
-    );
+    await Blog.updateOne({ _id: blogId }, { $push: { comments: { content, blogId, createdBy } } });
 
     const updated = await Blog.findById(blogId)
       .select("comments")
@@ -214,9 +197,7 @@ const addComment = async (req, res) => {
       .populate("comments.createdBy");
     const reversed = updated.comments.reverse();
 
-    return res
-      .status(200)
-      .json({ message: "Comment added successfully ", comments: reversed });
+    return res.status(200).json({ message: "Comment added successfully ", comments: reversed });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error Adding Comment" });
@@ -229,7 +210,7 @@ module.exports = {
   deleteBlogs,
   editBlogs,
   generateSignedUrlForBlogs,
-  getAllBlogsOfUser,
   getBlog,
+  getAllBlogs,
   improveContent,
 };

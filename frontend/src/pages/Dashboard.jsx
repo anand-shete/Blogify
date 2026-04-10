@@ -12,8 +12,8 @@ export default function UserHome() {
       <div className="lg:mx-30 mx-10 mt-5 px-4 py-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="mb-2 text-3xl font-bold">Welcome back, {user.name}</h1>
-            <p className="text-gray-600">Create, edit, and share your stories anytime.</p>
+            <h1 className="mb-2 text-2xl font-bold md:text-3xl">Welcome back, {user.name}</h1>
+            <p className="text-sm text-gray-600">Create, edit, and share your stories anytime.</p>
           </div>
           <Link to="/blog/add">
             <Button className="w-fit bg-neutral-900 text-white hover:bg-neutral-800">
@@ -22,7 +22,7 @@ export default function UserHome() {
             </Button>
           </Link>
         </div>
-        <h2 className="-mb-5 mt-10 text-2xl font-semibold">Your Posts</h2>
+        <h2 className="-mb-10 mt-10 text-xl font-semibold md:text-2xl">Your Posts</h2>
       </div>
 
       {loading ? <DashboardLoader /> : <DashboardSection blogs={blogs} />}

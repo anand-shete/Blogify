@@ -93,7 +93,7 @@ export default function Signup() {
       <Card className="md:min-w-110 m-5 px-5 text-center shadow-2xl shadow-black">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
-          <CardDescription>Create your Blogify account and Start writing</CardDescription>
+          <CardDescription>Create your account and start creating now!</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -147,7 +147,10 @@ export default function Signup() {
                 name="profileImageURL" // must be same in backend
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="ml-1">Profile Image (optional)</FormLabel>
+                    <FormLabel className="ml-1">
+                      Profile Image
+                      <p className="text-sm text-neutral-600">optional</p>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="file"
