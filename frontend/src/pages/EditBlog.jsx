@@ -22,8 +22,14 @@ import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
-import { Brain, Check } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bot, Check, LoaderCircle } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import useEditBlog from "@/hooks/useEditBlog";
 import { Loader } from "@/components/common";
 
@@ -32,14 +38,17 @@ const formSchema = z.object({
   content: z.string().min(1, { message: "Content cannot be empty" }),
   blogCoverImage: z
     .instanceof(FileList)
-    .refine(files => !files || files[0].type.startsWith("image"), "File must be an image")
+    .refine(
+      (files) => !files || files[0].type.startsWith("image"),
+      "File must be an image",
+    )
     .optional(),
 });
 
 export default function EditBlog() {
   const navigate = useNavigate();
   const { blogId } = useParams();
-  const user = useSelector(user => user.user);
+  const user = useSelector((user) => user.user);
   const [generate, setGenerate] = useState("");
   const contentRef = useRef(null);
   const titleRef = useRef(null);
@@ -66,13 +75,16 @@ export default function EditBlog() {
     }
   }, [blog.content, blog.title]);
 
-  const submit = async data => {
+  const submit = async (data) => {
     try {
+      setLoading(true);
       const file = data?.blogCoverImage?.[0];
       let coverImageURL;
 
       if (file) {
-        const res = await api.post("/blog/generate-signed-url", { type: file.type });
+        const res = await api.post("/blog/generate-signed-url", {
+          type: file.type,
+        });
         const url = res.data.url;
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
@@ -88,6 +100,8 @@ export default function EditBlog() {
       toast.success(res.data.message);
     } catch (error) {
       toast.error(error.respose.data.message || "Some Error Occured");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,12 +133,18 @@ export default function EditBlog() {
 
   return (
     <div className="flex min-w-full flex-col p-10 sm:p-20">
-      <Button className="mb-5 self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
+      <Button
+        className="mb-5 self-end hover:scale-110"
+        onClick={form.handleSubmit(submit)}
+      >
         <Check />
         Done
       </Button>
       <Form {...form} className="">
-        <form onSubmit={form.handleSubmit(submit)} className="flex flex-col space-y-10">
+        <form
+          onSubmit={form.handleSubmit(submit)}
+          className="flex flex-col space-y-10"
+        >
           <FormField
             control={form.control}
             name="title"
@@ -137,7 +157,7 @@ export default function EditBlog() {
                     type="text"
                     className="p-3"
                     {...field}
-                    ref={el => {
+                    ref={(el) => {
                       field.ref(el); // attach RHF's ref
                       titleRef.current = el; // attach our custom ref
                     }}
@@ -153,11 +173,14 @@ export default function EditBlog() {
             name="blogCoverImage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1 text-2xl">Cover Image (optional)</FormLabel>
+                <FormLabel className="ml-1 text-2xl">
+                  Cover Image
+                  <p className="text-sm mt-2 text-neutral-600">optional</p>
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="file"
-                    onChange={e => field.onChange(e.target.files)}
+                    onChange={(e) => field.onChange(e.target.files)}
                     className="cursor-pointer file:mr-5"
                   />
                 </FormControl>
@@ -169,28 +192,37 @@ export default function EditBlog() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">
-                <Brain className="relative top-[-3px] mr-1 inline text-green-600" />
+                <Bot
+                  className="relative top-[-3px] mr-1 inline text-primary"
+                  size={30}
+                />
                 AI Suggestions
               </CardTitle>
               <span className="text-muted-foreground text-sm">
-                Use Artificial Intelligence to refine your content.
+                Generate suggestions tailored to your current content.
               </span>
               <CardDescription>
                 <Button
-                  className="transition-all duration-200 hover:scale-110 hover:bg-green-600"
+                  className="transition-all mt-2 duration-200 hover:scale-110 hover:bg-green-600"
                   onClick={enchance}
                   type="button"
                 >
-                  <Brain />
                   Get Suggestions
                 </Button>
               </CardDescription>
             </CardHeader>
             <CardContent>
               {useAI ? (
-                <p>Please Wait...</p>
+                <div className="flex space-x-4 ">
+                  <LoaderCircle className="animate-spin" />
+                  <p className="text-neutral-700">
+                    Analyzing your content and generating suggestions...
+                  </p>
+                </div>
               ) : (
-                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{generate}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                  {generate}
+                </ReactMarkdown>
               )}
             </CardContent>
           </Card>
@@ -228,6 +260,7 @@ export default function EditBlog() {
               </FormItem>
             )}
           />
+
           <Button type="submit" className="max-w-[20vh]">
             <Check />
             Done

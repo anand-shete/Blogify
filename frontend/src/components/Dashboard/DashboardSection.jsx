@@ -13,8 +13,8 @@ const DashboardSection = ({ blogs }) => {
           Your Blogs will be displayed here
         </div>
       ) : (
-        <div className="lg:mx-30 mx-10 mt-5 grid grid-cols-1 gap-20 md:grid-cols-2 xl:grid-cols-3">
-          {blogs.map(blog => (
+        <div className="lg:mx-30 m-10 mt-5 grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3">
+          {blogs.map((blog) => (
             <Card
               key={blog._id}
               className="group border-neutral-600 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"

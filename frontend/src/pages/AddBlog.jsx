@@ -10,6 +10,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Form,
   FormControl,
   FormField,
@@ -24,22 +31,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
 import { Loader } from "@/components/common";
 import { setUser } from "@/features/userSlice";
-import { Brain, Plus } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bot, LoaderCircle, Plus } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Blog Title required" }),
   content: z.string().min(1, { message: "Content cannot be empty" }),
   blogCoverImage: z
     .instanceof(FileList)
-    .refine(files => !files || files[0].type.startsWith("image"), "File must be an image")
+    .refine(
+      (files) => !files || files[0].type.startsWith("image"),
+      "File must be an image",
+    )
     .optional(),
 });
 
 export default function AddBlog() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector(user => user.user);
+  const user = useSelector((user) => user.user);
   const [loading, setLoading] = useState(true);
   const [generate, setGenerate] = useState("");
   const contentRef = useRef(null);
@@ -66,14 +75,16 @@ export default function AddBlog() {
       blogCoverImage: undefined,
     },
   });
-  const submit = async data => {
+  const submit = async (data) => {
     try {
       setLoading(true);
       const file = data?.blogCoverImage?.[0];
       let coverImageURL = null;
 
       if (file) {
-        const res = await api.post("/blog/generate-signed-url", { type: file.type });
+        const res = await api.post("/blog/generate-signed-url", {
+          type: file.type,
+        });
         const url = res.data.url;
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },
@@ -95,13 +106,13 @@ export default function AddBlog() {
     }
   };
 
-  const enchance = async () => {
-    if (!contentRef.current.getContent() || !titleRef.current.value) {
-      toast.warning("Please give Title and Content");
-      return;
-    }
-
+  const getAiSuggestions = async () => {
     try {
+      if (!contentRef.current.getContent() || !titleRef.current.value) {
+        toast.warning("Please provide Title and Content");
+        return;
+      }
+
       setUseAI(true);
       const plainText = htmlToText(contentRef.current.getContent(), {
         wordwrap: false,
@@ -123,12 +134,18 @@ export default function AddBlog() {
 
   return (
     <div className="m-10 flex min-h-screen flex-col sm:m-20">
-      <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
+      <Button
+        className="mb-5 w-fit self-end hover:scale-110"
+        onClick={form.handleSubmit(submit)}
+      >
         <Plus />
         Post
       </Button>
-      <Form {...form} className="">
-        <form onSubmit={form.handleSubmit(submit)} className="flex flex-col space-y-10">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(submit)}
+          className="flex flex-col space-y-10"
+        >
           <FormField
             control={form.control}
             name="title"
@@ -141,7 +158,7 @@ export default function AddBlog() {
                     type="text"
                     className="p-3"
                     {...field}
-                    ref={el => {
+                    ref={(el) => {
                       field.ref(el); // attach RHF's ref
                       titleRef.current = el; // attach our custom ref
                     }}
@@ -157,11 +174,13 @@ export default function AddBlog() {
             name="blogCoverImage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1 text-2xl">Cover Image (optional)</FormLabel>
+                <FormLabel className="ml-1 text-2xl">
+                  Cover Image (optional)
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="file"
-                    onChange={e => field.onChange(e.target.files)}
+                    onChange={(e) => field.onChange(e.target.files)}
                     className="cursor-pointer file:mr-5"
                   />
                 </FormControl>
@@ -169,6 +188,45 @@ export default function AddBlog() {
               </FormItem>
             )}
           />
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">
+                <Bot
+                  className="relative top-[-3px] mr-1 inline text-primary"
+                  size={30}
+                />
+                AI Suggestions
+              </CardTitle>
+              <span className="text-muted-foreground text-sm">
+                Generate suggestions tailored to your current content.
+              </span>
+              <CardDescription>
+                <Button
+                  className="transition-all mt-2 duration-200 hover:scale-110"
+                  onClick={getAiSuggestions}
+                  type="button"
+                >
+                  Get Suggestions
+                </Button>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {useAI ? (
+                <div className="flex space-x-4 ">
+                  <LoaderCircle className="animate-spin" />
+                  <p className="text-neutral-700">
+                    Analyzing your content and generating suggestions...
+                  </p>
+                </div>
+              ) : (
+                <div className="prose max-w-none text-black">
+                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                    {generate}
+                  </ReactMarkdown>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {loading && <Loader />}
           {/* Tiny MCE editor */}

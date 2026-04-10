@@ -16,8 +16,8 @@ export default function Blog() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { blogId } = useParams();
-  const user = useSelector(state => state.user);
-  const blog = useSelector(state => state.blogs[0]);
+  const user = useSelector((state) => state.user);
+  const blog = useSelector((state) => state.blogs[0]);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState(null);
 
@@ -36,7 +36,7 @@ export default function Blog() {
     })();
   }, [dispatch, user]);
 
-  const postComment = async e => {
+  const postComment = async (e) => {
     try {
       e.preventDefault();
 
@@ -63,18 +63,18 @@ export default function Blog() {
           <motion.h1
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="mt-10 text-center text-2xl font-semibold sm:text-5xl"
+            className="mt-10 text-center text-2xl md:text-4xl font-semibold sm:text-3xl "
           >
             {blog.title}
           </motion.h1>
           <img
             src={blog.coverImageURL}
             alt="coverImageURL"
-            className="m-10 mx-auto inline-block rounded-md sm:max-w-[50vw]"
+            className="m-10 mx-auto border border-neutral-500 inline-block rounded-md sm:max-w-[50vw]"
           />
           <div
             dangerouslySetInnerHTML={{ __html: blog.content }}
-            className="mb-5 first-letter:float-left first-letter:mr-2 first-letter:text-6xl first-letter:font-bold first-letter:capitalize"
+            className="mb-5 prose max-w-none text-black text-sm"
           />
           <div className="mb-5 flex items-center justify-center space-x-5">
             <motion.img
@@ -82,11 +82,13 @@ export default function Blog() {
               className="h-20 rounded-full border-2 border-black"
               alt="author"
               referrerPolicy="no-referrer"
-              onError={e => {
+              onError={(e) => {
                 e.target.onerror = null;
                 e.target.src =
-                  blog.createdBy.profileImageURL.replace(/=s\d+-c$/, "=s200-c") +
-                  `?t=${Date.now()}`;
+                  blog.createdBy.profileImageURL.replace(
+                    /=s\d+-c$/,
+                    "=s200-c",
+                  ) + `?t=${Date.now()}`;
               }}
               whileHover={{ scale: 1.1 }}
             />
@@ -99,16 +101,23 @@ export default function Blog() {
 
           {/* Comments Sectiom */}
           <div className="my-20 flex flex-col">
-            <h1 className="pl-2 text-2xl font-semibold">{blog.comments.length} Comments</h1>
+            <h1 className="pl-2 text-2xl font-semibold">
+              {blog.comments.length} Comments
+            </h1>
             {user._id ? (
               <div className="flex items-center space-x-3 py-5 md:py-10">
                 <img
                   src={user.profileImageURL}
                   className="h-12 w-12 rounded-full border border-black"
                 />
-                <form className="flex items-center space-x-5" onSubmit={postComment}>
+                <form
+                  className="flex items-center space-x-5"
+                  onSubmit={postComment}
+                >
                   <div className="flex flex-col">
-                    <Label className="pb-1 pl-1 font-semibold">{user.name}</Label>
+                    <Label className="pb-1 pl-1 font-semibold">
+                      {user.name}
+                    </Label>
                     <Input
                       placeholder="What do you think?"
                       name="comment"
@@ -116,7 +125,7 @@ export default function Blog() {
                       required
                       autoComplete="on"
                       value={comment || ""}
-                      onChange={e => setComment(e.target.value)}
+                      onChange={(e) => setComment(e.target.value)}
                       className="sm:w-sm md:w-md lg:min-w-xl"
                     />
                   </div>
@@ -142,11 +151,13 @@ export default function Blog() {
                   alt="avatar"
                   className="h-12 rounded-full border border-black"
                   referrerPolicy="no-referrer"
-                  onError={e => {
+                  onError={(e) => {
                     e.target.onerror = null;
                     e.target.src =
-                      blog.createdBy.profileImageURL.replace(/=s\d+-c$/, "=s200-c") +
-                      `?t=${Date.now()}`;
+                      blog.createdBy.profileImageURL.replace(
+                        /=s\d+-c$/,
+                        "=s200-c",
+                      ) + `?t=${Date.now()}`;
                   }}
                 />
                 <div className="flex flex-col">

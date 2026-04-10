@@ -11,7 +11,8 @@ const generateSignedUrlForBlogs = async (req, res) => {
   try {
     const type = req.body.type;
     const url = await putObjectForBlog(type);
-    if (!url) return res.status(500).json({ message: "Error generating Signed URL" });
+    if (!url)
+      return res.status(500).json({ message: "Error generating Signed URL" });
 
     return res.status(201).json({ message: "Generated Pre-signed URL", url });
   } catch (error) {
@@ -41,7 +42,7 @@ const addBlog = async (req, res) => {
       title,
       content: sanitizedContent,
       createdBy: _id,
-      coverImageURL,
+      coverImageURL: coverImageURL ?? undefined,
     });
 
     // update the cache
@@ -56,7 +57,8 @@ const addBlog = async (req, res) => {
 const editBlogs = async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
+    if (!blogId)
+      return res.status(400).json({ message: "Params not sent properly" });
 
     const { title, content, _id: userId, coverImageURL } = req.body;
     if (!title || !content || !userId)
@@ -80,7 +82,7 @@ const editBlogs = async (req, res) => {
         content: sanitizedContent,
         createdBy: user._id,
         coverImageURL,
-      }
+      },
     );
 
     redis.del("blogs");
@@ -94,7 +96,9 @@ const editBlogs = async (req, res) => {
 const deleteBlogs = async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    if (!blogId) return res.status(400).json({ message: "Params not sent properly" });
+    if (!blogId) {
+      return res.status(400).json({ message: "Params not sent properly" });
+    }
 
     await Blog.deleteOne({ _id: blogId });
     return res.status(200).json({ message: "Blog Deleted successfully" });
@@ -107,22 +111,28 @@ const deleteBlogs = async (req, res) => {
 const improveContent = async (req, res) => {
   try {
     const { content, title } = req.body;
-    if (!content) return res.status(400).json({ message: "No content receicved" });
+    if (!content) {
+      return res.status(400).json({ message: "No content receicved" });
+    }
 
     const prompt = `
-    Given the blog title and raw blog body content, improve the grammar, clarity, and overall writing style. Maintain the original meaning.
-    Return the result strictly in clean **Markdown format**. 
-    Do NOT return HTML or wrap content in code blocks.
-    
-    Blog Title:
-    ${title}
-    
-    Blog Content:
-    ${content}
-    `;
+    You are an expert blog editor.
+    Your task is to improve the given blog content.
+
+    Rules:
+    - Fix grammar, clarity, and writing style.
+    - Maintain the original meaning where possible.
+    - If the content is too short, unclear, or low-quality, intelligently expand it into a well-written blog section based on the title.
+    - Do not ask for more input. Always produce a complete improved version.
+    - Do not include explanations, comments, or placeholders.
+    - Output only clean Markdown (NO HTML, NO code blocks).
+
+    Blog Title:${title}
+
+    Blog Content:${content}`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: {
         temperature: 0.3,
@@ -136,7 +146,7 @@ const improveContent = async (req, res) => {
       content: response.text,
     });
   } catch (error) {
-    console.error("Error:", error);
+    console.log("Error improving content", error);
     return res.status(500).json({
       messsage: "Failed to improve text using AI",
     });
@@ -153,7 +163,9 @@ const getAllBlogsOfUser = async (req, res) => {
     const user = await User.findOne({ _id: userId }).lean();
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const blogs = await Blog.find({ createdBy: user._id }).sort({ createdAt: 1 }).lean();
+    const blogs = await Blog.find({ createdBy: user._id })
+      .sort({ createdAt: 1 })
+      .lean();
     return res.status(200).json(blogs);
   } catch (error) {
     console.log(error);
@@ -178,7 +190,8 @@ const getBlog = async (req, res) => {
 const addComment = async (req, res) => {
   try {
     const { content, createdBy } = req.body;
-    if (!content || !createdBy) return res.status(400).json({ message: "All fields are required" });
+    if (!content || !createdBy)
+      return res.status(400).json({ message: "All fields are required" });
 
     const blogId = req.params?.blogId;
     if (!blogId) return res.status(404).json({ message: "Params not passed" });
@@ -192,7 +205,7 @@ const addComment = async (req, res) => {
         $push: {
           comments: { content, blogId, createdBy },
         },
-      }
+      },
     );
 
     const updated = await Blog.findById(blogId)
@@ -201,7 +214,9 @@ const addComment = async (req, res) => {
       .populate("comments.createdBy");
     const reversed = updated.comments.reverse();
 
-    return res.status(200).json({ message: "Comment added successfully ", comments: reversed });
+    return res
+      .status(200)
+      .json({ message: "Comment added successfully ", comments: reversed });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error Adding Comment" });

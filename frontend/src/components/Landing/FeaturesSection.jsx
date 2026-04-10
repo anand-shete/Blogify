@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Edit3, Lock, Database, MessageSquare } from "lucide-react";
+import { Edit3, Lock, Database, MessageSquare, Sparkles } from "lucide-react";
 
 export default function FeaturesSection() {
   const features = [
@@ -15,13 +15,13 @@ export default function FeaturesSection() {
     },
     {
       icon: Lock,
-      title: "Secure Authentication",
-      description: "Login safely using E-mail or Google OAuth integration",
+      title: "Flexible Authentication",
+      description: "Choose between Email or Google OAuth for quick access",
     },
     {
-      icon: Database,
-      title: "Fast Backend",
-      description: "Powered by Node.js, Express, and Redis for efficient caching and performance",
+      icon: Sparkles,
+      title: "AI-Powered Suggestions",
+      description: "Personalized content suggestions powered by Google Gemini",
     },
   ];
 
@@ -33,7 +33,8 @@ export default function FeaturesSection() {
             Everything you need to blog
           </h2>
           <p>
-            Powerful features designed to help you create, share, and grow your content effortlessly
+            Powerful features designed to help you create, share, and grow your
+            content effortlessly
           </p>
         </div>
 
@@ -49,7 +50,9 @@ export default function FeaturesSection() {
                   <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
                     <IconComponent className="text-primary h-6 w-6" />
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
+                  <h3 className="mb-2 text-lg font-semibold">
+                    {feature.title}
+                  </h3>
                   <p className="text-gray-600">{feature.description}</p>
                 </CardContent>
               </Card>
