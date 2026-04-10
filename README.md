@@ -3,15 +3,14 @@
 Blogify is a modern, interactive blogging platform designed to allow users to create, share, and engage with blog posts. With a sleek UI, secure authentication, and AI-powered features, Blogify offers a seamless experience for both readers and writers.
 
 ## System Design
+
 Blogify's **current production architecture** uses Amazon Web Services for a full fledged deployment.<br><br>
 ![Blogify archirecture](./aws.png)
-
 
 ## Live Demo
 
 If you directly want to view this project:
 <a href="https://blogify.anandshete.dev" target="_blank">Blogify</a>
-
 
 ## Features
 
@@ -63,27 +62,24 @@ npm install
 Create a `.env` file in the `backend` directory and add following variables
 
 ```bash
-MONGO_URI=mongodb+srv://<username>:<password>@cluster0.lnd7qzs.mongodb.net/
+MONGO_URI=your_MONGO_URI
 PORT=3000
-NODE_ENV=your_NODE_ENV
+NODE_ENV=development
 JWT_SECRET_KEY=your_JWT_SECRET_KEY
 REDIS_URI=your_REDIS_URI
 FRONTEND_URL=your_FRONTEND_URL
+COOKIE_DOMAIN=your_COOKIE_DOMAIN
 
-# AWS IAM
 ACCESS_KEY=your_ACCESS_KEY
 SECRET_ACCESS_KEY=your_SECRET_ACCESS_KEY
 BUCKET_NAME=your_BUCKET_NAME
 
-# Google OAuth
 GOOGLE_CLIENT_ID=your_GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET=your_GOOGLE_CLIENT_SECRET
 GOOGLE_REDIRECT_URI=your_GOOGLE_REDIRECT_URI
 SESSION_KEY=your_SESSION_KEY
 
-# Google Gemini API key
 GEMINI_API_KEY=your_GEMINI_API_KEY
-
 ```
 
 Create a .env file in the `frontend` directory with following variables
@@ -117,9 +113,34 @@ MongoDB connected
 🚀 Server started on http://localhost:3000
 ```
 
-### Future Implementation
+## Containerize backend with Docker
 
-- [ ] Containerize application using Docker
+1. Copy contens of `.env` into `.env.production.local`
+
+```bash
+cd ./backend
+cp .env .env.production.local
+```
+
+2. Replace the `REDIS_URI` inside `.env.production.local` with following value
+
+```bash
+REDIS_URI=redis://redis:6379
+```
+
+3. Spin up the stack using Docker Compose
+
+```dockerfile
+docker compose up --build
+```
+
+4. Verify
+
+Visit `http://localhost:3000/api/v1/health`. You should see
+
+```json
+{ "message": "Blogify API Health check passed 🚀" }
+```
 
 ---
 

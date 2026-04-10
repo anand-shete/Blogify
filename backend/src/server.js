@@ -8,7 +8,7 @@ const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const { RedisStore } = require("connect-redis");
-const { createClient } = require("redis");
+const { redis } = require("./config/redis");
 
 const app = express();
 const PORT = Number(process.env.PORT);
@@ -22,16 +22,14 @@ const startServer = async () => {
         origin: process.env.FRONTEND_URL,
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE"],
-      })
+      }),
     );
 
     app.use(express.urlencoded({ limit: "10mb", extended: true }));
     app.use(express.json({ limit: "10mb" }));
     app.use(cookieParser());
 
-    let redisClient = createClient();
-    redisClient.connect().catch(console.error);
-    let redisStore = new RedisStore({ client: redisClient, prefix: "blogify:", ttl: 3600 });
+    let redisStore = new RedisStore({ client: redis, prefix: "blogify:", ttl: 3600 });
 
     // pass cookie options
     app.use(
@@ -40,7 +38,7 @@ const startServer = async () => {
         secret: process.env.SESSION_KEY,
         resave: false,
         saveUninitialized: false,
-      })
+      }),
     );
 
     app.use("/api/v1", baseRoute);
