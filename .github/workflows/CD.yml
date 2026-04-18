@@ -16,7 +16,7 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
-        # Manually add .pub file to ~/.ssh/authorized_keys file in EC2 instance
+        # Add .pub file to ~/.ssh/authorized_keys file in EC2 instance beforehand
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_ed25519
