@@ -13,7 +13,7 @@ const getAllBlogs = async (req, res) => {
     }
 
     // query the database if not in cachne
-    const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3);
+    const blogs = await Blog.find().sort({ createdAt: -1 }).limit(5);
 
     // store in cache
     await redis.set("blogs", JSON.stringify(blogs), "EX", 300);
