@@ -4,12 +4,13 @@ module.exports = {
       name: "blogify",
       script: "./src/server.js",
       cwd: ".",
-      instances: 1, // 1 node process
-      exec_mode: "cluster",
+      instances: 1,
+      exec_mode: "fork",
       watch: false,
       autorestart: true,
-      max_memory_restart: "350M",
-      node_args: "--max-old-space-size=256",
+      max_memory_restart: "280M",
+      node_args: "--max-old-space-size=192",
+      exp_backoff_restart_delay: 100,
       kill_timeout: 5000,
       listen_timeout: 8000,
       env_production: {

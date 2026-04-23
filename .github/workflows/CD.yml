@@ -1,40 +1,46 @@
-name: Continous deployment to EC2
+name: Continuous Deployment to AWS EC2
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout Source Code
         uses: actions/checkout@v5
 
-      - name: Set up private SSH key
-        env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-        # Add .pub file to ~/.ssh/authorized_keys file in EC2 instance beforehand
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Build TypeScript
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+          cd ./backend
+          npm install
+          npm run build
 
-      - name: Copy deployment script into EC2
-        env:
-          EC2_USER: ${{secrets.EC2_USER}}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-        run: scp deploy.sh "$EC2_USER"@"$EC2_HOST":/home/ubuntu
+      - name: Deploy to EC2 via SSH
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.EC2_HOST }}
+          REMOTE_USER: ${{ secrets.EC2_USER }}
+          ARGS: "-rlgoDzvc -i"
+          SOURCE: "./backend/"
+          TARGET: "/home/${{ secrets.EC2_USER }}/blogify/"
+          EXCLUDE: "node_modules/, .git/, *.env, *.log"
+          SCRIPT_BEFORE: mkdir -p /home/${{ secrets.EC2_USER }}/blogify
 
-      - name: Execute deploy.sh script on EC2 instance
-        env:
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-        run: ssh -i ~/.ssh/id_ed25519 "$EC2_USER"@"$EC2_HOST" 'chmod +x ~/deploy.sh &&
-          ~/deploy.sh'
-
-      - name: Cleanup directories
-        run: rm -rf ~/.ssh
+      - name: Run deploy script on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            chmod +x /home/${{ secrets.EC2_USER }}/blogify/deploy.sh
+            /home/${{ secrets.EC2_USER }}/blogify/deploy.sh
