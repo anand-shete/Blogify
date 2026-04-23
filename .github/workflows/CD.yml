@@ -17,12 +17,6 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Build TypeScript
-        run: |
-          cd ./backend
-          npm install
-          npm run build
-
       - name: Deploy to EC2 via SSH
         uses: easingthemes/ssh-deploy@main
         with:
