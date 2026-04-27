@@ -30,7 +30,7 @@ fi
 
 npm ci --omit=dev
 
-pm2 startOrReload ecosystem.config.js --only "$PM2_APP_NAME" --env production
+pm2 reload blogify --update-env || pm2 start npm --name "blogify" -- start
 pm2 save
 
 sudo nginx -s reload
