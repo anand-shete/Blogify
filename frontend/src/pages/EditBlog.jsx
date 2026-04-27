@@ -82,7 +82,7 @@ export default function EditBlog() {
       let coverImageURL;
 
       if (file) {
-        const res = await api.post("/blog/generate-signed-url", {
+        const res = await api.post("/blog/signed-url", {
           type: file.type,
         });
         const url = res.data.url;

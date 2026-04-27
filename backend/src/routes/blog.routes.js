@@ -12,7 +12,7 @@ const {
 const router = express.Router();
 
 router.get("/", getAllBlogs);
-router.post("/generate-signed-url", generateSignedUrlForBlogs);
+router.post("/signed-url", generateSignedUrlForBlogs);
 router.post("/add", addBlog);
 router.post("/improve", improveContent);
 router.get("/:id", getBlog);

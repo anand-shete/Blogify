@@ -24,27 +24,33 @@ const startServer = async () => {
         methods: ["GET", "POST", "PUT", "DELETE"],
       }),
     );
-
+    app.set("trust proxy", 1);    // trust first reverse proxy (nginx)
     app.use(express.urlencoded({ limit: "10mb", extended: true }));
     app.use(express.json({ limit: "10mb" }));
     app.use(cookieParser());
 
-    let redisStore = new RedisStore({ client: redis, prefix: "blogify:", ttl: 3600 });
+    let redisStore = new RedisStore({ client: redis, prefix: "blogify:" });
 
-    // pass cookie options
     app.use(
       session({
         store: redisStore,
         secret: process.env.SESSION_KEY,
         resave: false,
         saveUninitialized: false,
+        cookie: {
+          path: "/",
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 1000 * 60 * 5, // connect-redis uses this as TTL
+        },
       }),
     );
 
     app.use("/api/v1", baseRoute);
     app.use("/api/v1/user", userRoute);
     app.use("/api/v1/blog", blogRoute);
-    app.listen(PORT, () => console.log(`🚀 Server started on http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`));
   } catch (error) {
     console.log("Error starting server", error);
     process.exit(1);

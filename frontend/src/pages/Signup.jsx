@@ -54,7 +54,7 @@ export default function Signup() {
       const file = data?.profileImageURL?.[0];
       let profileImageURL;
 
-      const check = await api.post("/user/check", data);
+      const check = await api.post("/user/auth/check-email", data);
       if (check.data) {
         toast.error("Account Already exists, please Login");
         return;
@@ -67,7 +67,7 @@ export default function Signup() {
 
       // configured CORS policy of the bucket
       if (file) {
-        const res = await api.post("/user/generate-signed-url", { type: file.type });
+        const res = await api.post("/user/signed-url", { type: file.type });
         const url = res.data.url;
         await axios.put(url, file, {
           headers: { "Content-Type": file.type },

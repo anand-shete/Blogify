@@ -63,6 +63,7 @@ export default function Blog() {
           <motion.h1
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
+            transition={{ duration: 0.2 }}
             className="mt-10 text-center text-2xl font-semibold sm:text-3xl md:text-4xl"
           >
             {blog.title}

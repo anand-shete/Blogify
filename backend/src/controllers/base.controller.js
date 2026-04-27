@@ -12,11 +12,12 @@ const getAllBlogs = async (req, res) => {
       return res.status(200).json({ blogs: JSON.parse(cachedBlogs) });
     }
 
-    // query the database if not in cachne
-    const blogs = await Blog.find().sort({ createdAt: -1 }).limit(5);
+    // query the database if not in cache
+    const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3);
 
-    // store in cache
-    await redis.set("blogs", JSON.stringify(blogs), "EX", 300);
+    // store in cache with 10 mins expiry
+    await redis.set("blogs", JSON.stringify(blogs), { expiration: { type: "EX", value: 600 } });
+
     return res.status(200).json({ blogs });
   } catch (error) {
     console.log(error);

@@ -73,7 +73,7 @@ export default function AddBlog() {
       let coverImageURL = null;
 
       if (file) {
-        const res = await api.post("/blog/generate-signed-url", {
+        const res = await api.post("/blog/signed-url", {
           type: file.type,
         });
         const url = res.data.url;
@@ -230,7 +230,6 @@ export default function AddBlog() {
                     onEditorChange={(newContent, editor) => {
                       field.onChange(newContent);
                     }}
-                    value={field.value} // Bind to form state
                     init={{
                       plugins:
                         "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",

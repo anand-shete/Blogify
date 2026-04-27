@@ -1,3 +1,4 @@
+import api from "@/api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -13,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { NavLink, useNavigate, useLocation } from "react-router";
-import api from "@/api";
 import { toast } from "sonner";
 import google from "@/assets/google.svg";
 
@@ -25,11 +25,11 @@ const formSchema = z.object({
 export default function Login() {
   const navigate = useNavigate();
   const { search } = useLocation();
+
   if (search.split("?")[1] === "OAuthError") {
     toast.error("Google Authentication Error");
   }
 
-  // if(search.split("?")[1] == )
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,18 +45,20 @@ export default function Login() {
 
   const submit = async data => {
     try {
-      const res = await api.post("/user/signin", data);
+      const res = await api.post("/user/login", data);
       toast.success(res.data.message);
       navigate("/dashboard");
     } catch (error) {
-      if (error.status == 404) navigate("/signup");
+      // if (error.status == 404) navigate("/signup");
+      console.log(error);
+      
       toast.error(error.response.data.message || "Login Failed");
     }
   };
 
   return (
     <div className="flex min-w-full flex-col items-center justify-center bg-neutral-200">
-      <Card className="md:min-w-110 mx-5 my-20 px-5 text-center shadow-2xl shadow-black">
+      <Card className="mx-5 my-20 px-5 text-center shadow-2xl shadow-black md:min-w-110">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>Enter your details below to Login</CardDescription>
@@ -97,7 +99,7 @@ export default function Login() {
               />
               <Button type="submit">Login</Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="z-1 bg-background text-muted-foreground relative px-2">
+                <span className="bg-background text-muted-foreground relative z-1 px-2">
                   Or continue with
                 </span>
               </div>

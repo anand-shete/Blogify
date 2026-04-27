@@ -9,7 +9,7 @@ export default function UserHome() {
 
   return (
     <div className="min-h-screen min-w-full">
-      <div className="lg:mx-30 mx-10 mt-5 px-4 py-10">
+      <div className="mx-10 mt-5 px-4 py-10 lg:mx-30">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="mb-2 text-2xl font-bold md:text-3xl">Welcome back, {user.name}</h1>
@@ -22,10 +22,12 @@ export default function UserHome() {
             </Button>
           </Link>
         </div>
-        <h2 className="-mb-10 mt-10 text-xl font-semibold md:text-2xl">Your Posts</h2>
+        <h2 className="mt-10 -mb-10 text-xl font-semibold md:text-2xl">Your Posts</h2>
       </div>
 
-      {loading ? <DashboardLoader /> : <DashboardSection blogs={blogs} />}
+      <div className="min-h-screen min-w-full">
+        {loading ? <DashboardLoader /> : <DashboardSection blogs={blogs} />}
+      </div>
     </div>
   );
 }

@@ -1,17 +1,21 @@
 const crypto = require("crypto");
 const User = require("../models/user.model");
+const Blog = require("../models/blog.model");
 const { putObjectForProfile } = require("../config/aws");
 const { generateUserToken, validateToken } = require("../services/auth");
 const { getGoogleOAuthClient, setJWT } = require("../utils/index.utils");
-const Blog = require("../models/blog.model");
 
-const checkAuth = async (req, res) => {
-  const { email } = req.body;
+const checkEmailExists = async (req, res) => {
+  try {
+    const { email } = req.body;
 
-  const user = await User.countDocuments({ email }).lean();
-  if (user) return res.status(200).json(true);
+    const user = await User.countDocuments({ email });
+    if (user) return res.status(200).json(true);
 
-  return res.status(200).json(false);
+    return res.status(200).json(false);
+  } catch (error) {
+    return res.status(200).json(false);
+  }
 };
 
 const generateSignedUrl = async (req, res) => {
@@ -28,7 +32,7 @@ const generateSignedUrl = async (req, res) => {
   }
 };
 
-const signup = async (req, res) => {
+const signupUser = async (req, res) => {
   try {
     const { name, email, password, profileImageURL } = req.body;
 
@@ -49,7 +53,7 @@ const signup = async (req, res) => {
   }
 };
 
-const signin = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -107,6 +111,8 @@ const googleOAuth = (req, res) => {
     const state = crypto.randomBytes(32).toString("hex");
 
     req.session.state = state;
+    
+
     const authorizedUrl = oauthclient.generateAuthUrl({
       access_type: "offline",
       scope: [
@@ -130,6 +136,7 @@ const googleOAuthCallback = async (req, res) => {
   try {
     const code = req.query?.code;
     if (req.query?.error || req.query?.state != req.session.state) {
+      console.log("error");
       return res.redirect(`${process.env.FRONTEND_URL}/login?OAuthError`);
     }
 
@@ -158,9 +165,11 @@ const googleOAuthCallback = async (req, res) => {
       });
     }
 
+    req.session.destroy();
+
     const token = generateUserToken(user);
     if (!token) {
-      return res.status(500).json({ message: "Error generaing token" });
+      return res.status(500).json({ message: "Error generating token" });
     }
 
     await setJWT(res, token);
@@ -191,10 +200,10 @@ const getAllBlogsOfUser = async (req, res) => {
 };
 
 module.exports = {
-  checkAuth,
+  checkEmailExists,
   generateSignedUrl,
-  signup,
-  signin,
+  signupUser,
+  loginUser,
   logout,
   authStatus,
   googleOAuth,
