@@ -5,7 +5,7 @@ set -euo pipefail
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-APP_DIR="$HOME/blogify/backend"
+APP_DIR="$HOME/blogify"
 
 
 echo "=== Deployment Started ==="
@@ -23,6 +23,7 @@ if [[ ! -f "package.json" ]]; then
 fi
 
 # change to `src/server.js` if not using typescript, 
+# check rootDir and outDir in tsconfig.json
 if [[ ! -f "src/server.js" ]]; then
 	echo "Build artifact missing: src/server.js"
 	exit 1
@@ -30,9 +31,7 @@ fi
 
 npm ci --omit=dev
 
-pm2 reload blogify || pm2 start npm --name "blogify" -- start
+pm2 startOrReload ecosystem.config.js --only "blogify" --env production
 pm2 save
-
-sudo nginx -s reload
 
 echo "=== Deployment Finished ==="
