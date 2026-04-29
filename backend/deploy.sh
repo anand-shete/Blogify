@@ -5,7 +5,7 @@ set -euo pipefail
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-APP_DIR="$HOME/blogify"
+APP_DIR="$HOME/blogify/backend"
 
 
 echo "=== Deployment Started ==="
@@ -30,7 +30,7 @@ fi
 
 npm ci --omit=dev
 
-pm2 startOrReload ecosystem.config.js --only "blogify" --env production
+pm2 reload blogify || pm2 start npm --name "blogify" -- start
 pm2 save
 
 sudo nginx -s reload
