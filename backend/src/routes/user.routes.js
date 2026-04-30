@@ -10,15 +10,20 @@ const {
   googleOAuthCallback,
   getAllBlogsOfUser,
 } = require("../controllers/user.controller");
-const { loginLimiter } = require("../middlewares/rateLimiters");
+const {
+  loginLimiter,
+  signupLimiter,
+  checkEmailLimiter,
+  signedUrlRateLimiter,
+} = require("../middlewares/rateLimiters");
 
 const router = Router();
 
-router.post("/signed-url", generateSignedUrl); // y
-router.post("/signup", signupUser); //y
-router.post("/login", loginLimiter, loginUser); //y
+router.post("/signed-url", signedUrlRateLimiter, generateSignedUrl);
+router.post("/signup", signupLimiter, signupUser);
+router.post("/login", loginLimiter, loginUser);
 router.get("/logout", logout);
-router.post("/auth/check-email", checkEmailExists); //y
+router.post("/auth/check-email", checkEmailLimiter, checkEmailExists);
 router.get("/auth/status", authStatus);
 router.get("/auth/google", googleOAuth);
 router.get("/auth/google/callback", googleOAuthCallback);

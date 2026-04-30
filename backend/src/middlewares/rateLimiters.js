@@ -39,4 +39,4 @@ const signedUrlRateLimiter = rateLimit({
   ...defaultOpts,
 });
 
-module.exports = { loginLimiter };
+module.exports = { loginLimiter, signupLimiter, checkEmailLimiter, signedUrlRateLimiter };
