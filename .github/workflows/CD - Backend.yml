@@ -47,25 +47,3 @@ jobs:
             rm -rf /home/${{ secrets.EC2_USER }}/blogify_tmp
             chmod +x /home/${{ secrets.EC2_USER }}/blogify/deploy.sh
             /home/${{ secrets.EC2_USER }}/blogify/deploy.sh
-
-  frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v6
-
-      - name: Setup node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-      - run: npm install && npm run build
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-      - run: aws s3 sync dist/ s3://your-bucket-name --delete
-      # Recommended: Invalidate CloudFront cache so changes show immediately
-      - run:
-          aws cloudfront create-invalidation --distribution-id YOUR_DIST_ID --paths
-          "/*"
