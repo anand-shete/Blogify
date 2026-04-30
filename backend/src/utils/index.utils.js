@@ -8,30 +8,4 @@ const getGoogleOAuthClient = () => {
   );
 };
 
-const setJWT = async (res, token) => {
-  if (process.env.NODE_ENV === "production") {
-    res.cookie("token", token, prodCookieOpts);
-  } else {
-    res.cookie("token", token, devCookieOpts);
-  }
-};
-
-const prodCookieOpts = {
-  domain: process.env.COOKIE_DOMAIN,
-  httpOnly: true,
-  maxAge: 1000 * 60 * 60 * 24,
-  sameSite: "none",
-  secure: process.env.NODE_ENV === "production",
-};
-
-const devCookieOpts = {
-  httpOnly: true,
-  maxAge: 1000 * 60 * 60 * 24,
-};
-
-module.exports = {
-  getGoogleOAuthClient,
-  setJWT,
-  prodCookieOpts,
-  devCookieOpts,
-};
+module.exports = { getGoogleOAuthClient };

@@ -1,17 +1,11 @@
-import { motion } from "motion/react";
+import { BarLoader } from "react-spinners";
+import img from "@/assets/hero1.svg";
 
 export default function Loader() {
   return (
-    <div className="fixed left-0 top-0 z-10 flex min-h-screen min-w-full items-center justify-center bg-white">
-      <motion.div
-        className="sm:scale-200 absolute h-20 w-20 rounded-full border-t-4 border-indigo-600"
-        animate={{ rotate: 360 }}
-        transition={{
-          duration: 0.5,
-          repeat: Infinity,
-          repeatType: "loop",
-        }}
-      />
+    <div className="fixed top-0 left-0 z-10 flex min-h-screen min-w-full flex-col items-center justify-center space-y-10 bg-white">
+      <img src={img} alt="loader" className="h-[20vh]" />
+      <BarLoader width={130} color="#4f46e5" className="mb-20" />
     </div>
   );
 }

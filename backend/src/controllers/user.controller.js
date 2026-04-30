@@ -3,7 +3,7 @@ const User = require("../models/user.model");
 const Blog = require("../models/blog.model");
 const { putObjectForProfile } = require("../config/aws");
 const { generateUserToken, validateToken } = require("../services/auth");
-const { getGoogleOAuthClient, setJWT } = require("../utils/index.utils");
+const { getGoogleOAuthClient } = require("../utils/index.utils");
 
 const checkEmailExists = async (req, res) => {
   try {
@@ -77,7 +77,13 @@ const loginUser = async (req, res) => {
     if (!token) {
       return res.status(400).json({ message: "Error generating Token" });
     }
-    await setJWT(res, token);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24,
+    });
 
     return res.status(200).json({ message: "Login success" });
   } catch (error) {
@@ -111,7 +117,6 @@ const googleOAuth = (req, res) => {
     const state = crypto.randomBytes(32).toString("hex");
 
     req.session.state = state;
-    
 
     const authorizedUrl = oauthclient.generateAuthUrl({
       access_type: "offline",
@@ -172,7 +177,12 @@ const googleOAuthCallback = async (req, res) => {
       return res.status(500).json({ message: "Error generating token" });
     }
 
-    await setJWT(res, token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24,
+    });
     return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
   } catch (error) {
     console.log("error redirecting in google oauth flow", error);

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URI,
-  // withCredentials: true,     // only in dev
+  withCredentials: true, // only in dev
 });
 
 export default api;
