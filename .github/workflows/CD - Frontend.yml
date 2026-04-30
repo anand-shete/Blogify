@@ -3,7 +3,6 @@ name: "Frontend: Production Deploy"
 on:
   push:
     branches: [main]
-    paths: ["frontend/**"]
 
 jobs:
   deploy_s3:
