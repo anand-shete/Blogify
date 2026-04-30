@@ -1,12 +1,13 @@
-name: Continuous Deployment to EC2
+name: "Backend: Production Deploy"
 
 on:
   push:
     branches: [main]
+    paths: ["backend/**"]
 
 jobs:
-  backend:
-    name: Deploy backend to EC2
+  deploy_ec2:
+    name: "Update EC2 Service"
     runs-on: ubuntu-latest
 
     steps:
