@@ -115,14 +115,14 @@ MongoDB connected
 
 ## Containerize backend with Docker
 
-1. Copy contens of `.env` into `.env.production.local`
+1. Copy contens of `.env` into `.env.docker`
 
 ```bash
 cd ./backend
-cp .env .env.production.local
+cp .env .env.docker
 ```
 
-2. Replace the `REDIS_URI` inside `.env.production.local` with following value
+2. Replace the `REDIS_URI` inside `.env.docker` with following value
 
 ```bash
 REDIS_URI=redis://redis:6379

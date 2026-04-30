@@ -18,6 +18,12 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Install dependencies and zip
+        run: |
+          cd ./backend
+          npm ci --omit=dev
+          zip -r ../deploy.zip .
+
       - name: Deploy to EC2 via SSH
         uses: easingthemes/ssh-deploy@main
         with:
@@ -25,17 +31,18 @@ jobs:
           REMOTE_HOST: ${{ secrets.EC2_HOST }}
           REMOTE_USER: ${{ secrets.EC2_USER }}
           ARGS: "-rlgoDzvc -i"
-          SOURCE: "./backend/"
-          TARGET: "/home/${{ secrets.EC2_USER }}/blogify/"
-          EXCLUDE: "node_modules/, .git/, *.env, *.log"
-          SCRIPT_BEFORE: mkdir -p /home/${{ secrets.EC2_USER }}/blogify
+          SOURCE: "./deploy.zip"
+          TARGET: "/home/${{ secrets.EC2_USER }}/blogify_tmp/"
 
-      - name: Run deploy script on EC2
+      - name: Unzip and run deploy script on EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            mkdir -p /home/${{ secrets.EC2_USER }}/blogify
+            unzip -o /home/${{ secrets.EC2_USER }}/blogify_tmp/deploy.zip -d /home/${{ secrets.EC2_USER }}/blogify
+            rm -rf /home/${{ secrets.EC2_USER }}/blogify_tmp
             chmod +x /home/${{ secrets.EC2_USER }}/blogify/deploy.sh
             /home/${{ secrets.EC2_USER }}/blogify/deploy.sh

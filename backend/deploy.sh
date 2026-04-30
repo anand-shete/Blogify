@@ -17,11 +17,6 @@ fi
 
 cd "$APP_DIR"
 
-if [[ ! -f "package.json" ]]; then
-	echo "package.json not found in $APP_DIR"
-	exit 1
-fi
-
 # change to `src/server.js` if not using typescript, 
 # check rootDir and outDir in tsconfig.json
 if [[ ! -f "src/server.js" ]]; then
@@ -29,9 +24,7 @@ if [[ ! -f "src/server.js" ]]; then
 	exit 1
 fi
 
-npm ci --omit=dev
-
-pm2 reload blogify --update-env || pm2 start npm --name blogify -- start
+pm2 reload blogify --update-env || pm2 start src/server.js --name blogify
 pm2 save
 
 echo "=== Deployment Finished ==="

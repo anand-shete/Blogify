@@ -2,11 +2,8 @@ node_modules
 
 npm-debug.log
 .git
-.vscode
 .gitignore
 .env
-.env.production
-.env.docker
 
 Dockerfile
 
