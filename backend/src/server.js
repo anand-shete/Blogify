@@ -41,7 +41,7 @@ const startServer = async () => {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
-          maxAge: 1000 * 60 * 5, // connect-redis uses this as TTL
+          maxAge: 1000 * 60 * 15, // connect-redis uses this as TTL
         },
       }),
     );

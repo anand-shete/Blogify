@@ -34,7 +34,7 @@ jobs:
           SOURCE: "./deploy.zip"
           TARGET: "/home/${{ secrets.EC2_USER }}/blogify_tmp/"
 
-      - name: Unzip and run deploy script on EC2
+      - name: Cleanup, unzip and run deploy script on EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -42,6 +42,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             mkdir -p /home/${{ secrets.EC2_USER }}/blogify
+            rm -rf /home/${{ secrets.EC2_USER }}/blogify/*
             unzip -o /home/${{ secrets.EC2_USER }}/blogify_tmp/deploy.zip -d /home/${{ secrets.EC2_USER }}/blogify
             rm -rf /home/${{ secrets.EC2_USER }}/blogify_tmp
             chmod +x /home/${{ secrets.EC2_USER }}/blogify/deploy.sh
