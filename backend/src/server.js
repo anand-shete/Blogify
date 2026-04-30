@@ -30,8 +30,7 @@ const startServer = async () => {
     app.use(express.json({ limit: "10mb" }));
     app.use(cookieParser());
 
-    let redisStore = new RedisStore({ client: redis, prefix: "blogify:" });
-
+    const redisStore = new RedisStore({ client: redis, prefix: "blogify:" });
     app.use(
       session({
         store: redisStore,
@@ -39,7 +38,6 @@ const startServer = async () => {
         resave: false,
         saveUninitialized: false,
         cookie: {
-          path: "/",
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",

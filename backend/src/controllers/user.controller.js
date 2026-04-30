@@ -117,20 +117,25 @@ const googleOAuth = (req, res) => {
     const state = crypto.randomBytes(32).toString("hex");
 
     req.session.state = state;
+    req.session.save(err => {
+      if (err) {
+        console.log("Session save error", err);
+        return res.status(500).json({ message: "Error generating Google Auth URL" });
+      }
 
-    const authorizedUrl = oauthclient.generateAuthUrl({
-      access_type: "offline",
-      scope: [
-        "https://www.googleapis.com/auth/userinfo.email",
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "openid",
-      ],
-      state,
-      prompt: "consent",
-      response_type: "code",
+      const authorizedUrl = oauthclient.generateAuthUrl({
+        access_type: "offline",
+        scope: [
+          "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/userinfo.profile",
+          "openid",
+        ],
+        state,
+        prompt: "consent",
+        response_type: "code",
+      });
+      return res.redirect(authorizedUrl);
     });
-
-    return res.redirect(authorizedUrl);
   } catch (error) {
     console.log("Error generating google authorization url", error);
     return res.status(500).json({ message: "Error generating Google Auth URL" });
@@ -140,8 +145,9 @@ const googleOAuth = (req, res) => {
 const googleOAuthCallback = async (req, res) => {
   try {
     const code = req.query?.code;
-    if (req.query?.error || req.query?.state != req.session.state) {
-      console.log("error");
+    if (req.query?.error || req.query?.state != req.session?.state) {
+      console.log("query error", req.query?.error);
+      console.log("state mismatch error: ", req.query?.state != req.session.state);
       return res.redirect(`${process.env.FRONTEND_URL}/login?OAuthError`);
     }
 
