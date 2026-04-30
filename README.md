@@ -14,19 +14,19 @@ If you directly want to view this project:
 
 ## Features
 
-- **Redis**: Used Redis to cache blogs on the landing page.
-- **Blog Creation**: Add blogs using a rich Text Editor and Gemini 2.0 Flash for AI suggestions.
-- **Authentication**: Supports both JWT and Google OAuth 2.0 for secure login and registration.
-- **Images**: All images stored in S3 Buckets with presigned URLs for uploads.
-- **Nginx**: Acts as a reverse proxy for backend APIs and serves APIs.
+- **Fast Content Delivery**: Optimized blog loading using Redis caching and AWS Cloudfront to reduce response times.
+- **AI-Assisted Blog Writing**: Create blogs with a rich text editor enhanced by Gemini Flash for AI-powered writing suggestions.
+- **Multiple Authentication**: Supports both Email-based authentication and Google OAuth 2.0 for login.
+- **Scalable Image Storage**: Blog images stored on AWS S3 using presigned upload URLs for efficient file handling.
+- **API Protection**: Implemented Rate limiting to prevent abuse, prevent excessive requests, and improve backend stability.
 
 ## Tech Stack
 
-- **Frontend**: React, Redux, TailwindCSS, ShadCN
-- **Backend**: Express, Passport, JWT, Bcrypt, CORS, Sanitize-HTML, AWS SDK
+- **Frontend**: React, Redux, Tailwind, ShadCN
+- **Backend**: Express, JWT, Bcrypt, CORS, Sanitize-HTML, AWS SDK
 - **Database**: MongoDB Atlas
-- **Caching**: `ioredis`
-- **AI Integration**: `@google/generative-ai`
+- **Caching**: Redis
+- **AI Integration**: `@google/genai`
 
 ## Local Development
 
@@ -34,10 +34,11 @@ If you directly want to view this project:
 
 - Node.js (v20+ recommended)
 - MongoDB setup locally
-- AWS Account (configured IAM and S3 services)
+- AWS account (configured IAM and S3 services)
 - Redis installed locally
-- Google Cloud API key (for Gemini 2.0 Flash)
-- Google OAuth Key
+- Google Geimini API key
+- Google OAuth credentials
+- TinyMCE API key
 
 #### Follow the below steps to run project locally
 

@@ -5,8 +5,8 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-ARG VITE_BACKEND_URI
-ENV VITE_BACKEND_URI=$VITE_BACKEND_URI
+ARG VITE_API_URI
+ENV VITE_API_URI=$VITE_API_URI
 RUN npm run build
 
 FROM nginx:1.27-alpine

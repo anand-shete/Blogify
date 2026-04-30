@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 const baseRoute = require("./routes/base.routes");
 const userRoute = require("./routes/user.routes");
 const blogRoute = require("./routes/blog.routes");
@@ -17,14 +16,7 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    app.use(
-      cors({
-        origin: process.env.FRONTEND_URL,
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE"],
-      }),
-    );
-    app.set("trust proxy", 1);    // trust first reverse proxy (nginx)
+    app.set("trust proxy", 1); // trust first reverse proxy (nginx)
     app.use(express.urlencoded({ limit: "10mb", extended: true }));
     app.use(express.json({ limit: "10mb" }));
     app.use(cookieParser());

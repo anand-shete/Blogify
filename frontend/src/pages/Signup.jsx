@@ -45,7 +45,7 @@ export default function Signup() {
   });
 
   const Oauth = async () => {
-    window.location.href = `${import.meta.env.VITE_BACKEND_URI}/user/auth/google`;
+    window.location.href = `${import.meta.env.VITE_API_URI}/user/auth/google`;
   };
 
   const submit = async data => {
