@@ -23,13 +23,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
 import { Bot, Check, LoaderCircle } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useEditBlog from "@/hooks/useEditBlog";
 import { Loader } from "@/components/common";
 
@@ -38,17 +32,14 @@ const formSchema = z.object({
   content: z.string().min(1, { message: "Content cannot be empty" }),
   blogCoverImage: z
     .instanceof(FileList)
-    .refine(
-      (files) => !files || files[0].type.startsWith("image"),
-      "File must be an image",
-    )
+    .refine(files => !files || files[0].type.startsWith("image"), "File must be an image")
     .optional(),
 });
 
 export default function EditBlog() {
   const navigate = useNavigate();
   const { blogId } = useParams();
-  const user = useSelector((user) => user.user);
+  const user = useSelector(user => user.user);
   const [generate, setGenerate] = useState("");
   const contentRef = useRef(null);
   const titleRef = useRef(null);
@@ -75,7 +66,7 @@ export default function EditBlog() {
     }
   }, [blog.content, blog.title]);
 
-  const submit = async (data) => {
+  const submit = async data => {
     try {
       setLoading(true);
       const file = data?.blogCoverImage?.[0];
@@ -133,31 +124,21 @@ export default function EditBlog() {
 
   return (
     <div className="flex min-w-full flex-col p-10 sm:p-20">
-      <Button
-        className="mb-5 self-end hover:scale-110"
-        onClick={form.handleSubmit(submit)}
-      >
-        <Check />
-        Done
-      </Button>
-      <Form {...form} className="">
-        <form
-          onSubmit={form.handleSubmit(submit)}
-          className="flex flex-col space-y-10"
-        >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(submit)} className="mb-20 flex flex-col space-y-10">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1 text-2xl">Title</FormLabel>
+                <FormLabel className="ml-1 text-xl">Title</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Blog Title"
                     type="text"
                     className="p-3"
                     {...field}
-                    ref={(el) => {
+                    ref={el => {
                       field.ref(el); // attach RHF's ref
                       titleRef.current = el; // attach our custom ref
                     }}
@@ -173,15 +154,15 @@ export default function EditBlog() {
             name="blogCoverImage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1 text-2xl">
+                <FormLabel className="ml-1 text-xl">
                   Cover Image
-                  <p className="text-sm mt-2 text-neutral-600">optional</p>
+                  <p className="mt-2 text-sm text-neutral-600">optional</p>
                 </FormLabel>
                 <FormControl>
                   <Input
                     type="file"
-                    onChange={(e) => field.onChange(e.target.files)}
-                    className="cursor-pointer file:mr-5"
+                    onChange={e => field.onChange(e.target.files)}
+                    className="cursor-pointer text-neutral-600 file:mr-5 file:text-neutral-700"
                   />
                 </FormControl>
                 <FormMessage />
@@ -189,21 +170,18 @@ export default function EditBlog() {
             )}
           />
 
-          <Card>
+          <Card className={"border border-neutral-500"}>
             <CardHeader>
-              <CardTitle className="text-2xl">
-                <Bot
-                  className="relative top-[-3px] mr-1 inline text-primary"
-                  size={30}
-                />
+              <CardTitle className="text-xl">
+                <Bot className="text-primary relative top-[-3px] mr-1 inline" size={30} />
                 AI Suggestions
               </CardTitle>
               <span className="text-muted-foreground text-sm">
-                Generate suggestions tailored to your current content.
+                Generate suggestions tailored to your existing content.
               </span>
               <CardDescription>
                 <Button
-                  className="transition-all mt-2 duration-200 hover:scale-110 hover:bg-green-600"
+                  className="mt-2 transition-all duration-200 hover:scale-110"
                   onClick={enchance}
                   type="button"
                 >
@@ -213,16 +191,14 @@ export default function EditBlog() {
             </CardHeader>
             <CardContent>
               {useAI ? (
-                <div className="flex space-x-4 ">
+                <div className="flex space-x-4">
                   <LoaderCircle className="animate-spin" />
                   <p className="text-neutral-700">
                     Analyzing your content and generating suggestions...
                   </p>
                 </div>
               ) : (
-                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-                  {generate}
-                </ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{generate}</ReactMarkdown>
               )}
             </CardContent>
           </Card>
@@ -261,7 +237,7 @@ export default function EditBlog() {
             )}
           />
 
-          <Button type="submit" className="max-w-[20vh]">
+          <Button type="submit" className="max-w-[20vh]" size="lg">
             <Check />
             Done
           </Button>

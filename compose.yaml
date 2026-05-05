@@ -15,7 +15,10 @@ services:
     build:
       context: ./backend
     env_file:
-      - ./backend/.env.docker
+      - ./backend/.env.production
+      # modify env varibles here
+    MONGO_URI=mongodb://mongo:27017/blogify
+    REDIS_URI=redis://redis:6379
     depends_on:
       - mongo
       - redis

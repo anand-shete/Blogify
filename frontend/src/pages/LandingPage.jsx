@@ -1,14 +1,14 @@
 import { Toaster } from "@/components/ui/sonner";
-import { OurBlogs, HeroSection, FAQSection, FeaturesSection } from "@/components/Landing";
+import { LandingPageBlogs, HeroSection, FAQSection, FeaturesSection } from "@/components/Landing";
 
-export default function Home() {
-  return (
-    <>
-      <HeroSection />
-      <OurBlogs />
-      <FeaturesSection />
-      <FAQSection />
-      <Toaster />
-    </>
-  );
-}
+const Home = () => (
+  <>
+    <HeroSection />
+    <LandingPageBlogs />
+    <FeaturesSection />
+    <FAQSection />
+    <Toaster />
+  </>
+);
+
+export default Home;

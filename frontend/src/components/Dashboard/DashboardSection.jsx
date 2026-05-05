@@ -7,7 +7,7 @@ const DashboardSection = ({ blogs }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="m-10 mt-5 mb-20 grid grid-cols-1 gap-20 md:grid-cols-2 lg:mx-30 xl:grid-cols-3">
+    <div className="m-10 mt-5 grid grid-cols-1 gap-20 md:grid-cols-2 lg:mx-30 xl:grid-cols-3">
       {blogs.map(blog => (
         <Card
           key={blog._id}
@@ -24,19 +24,16 @@ const DashboardSection = ({ blogs }) => {
               <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/10" />
             </div>
 
-            {/* Blog Content */}
-            <div className="p-6">
-              <h3 className="mb-4 line-clamp-2 text-center text-xl leading-tight font-semibold">
+            <div>
+              <h3 className="line-clamp-2 py-4 text-center text-xl leading-tight font-bold tracking-tight">
                 {blog.title}
               </h3>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 px-10">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => navigate(`/blog/view/${blog._id}`)}
-                  className="flex-1 border-neutral-200 text-gray-600 hover:bg-neutral-50 hover:text-gray-900"
+                  className="flex-1 border-neutral-200 text-gray-800 hover:bg-neutral-50 hover:text-gray-900"
                 >
                   <Eye className="mr-1 h-4 w-4" />
                   View
@@ -45,7 +42,7 @@ const DashboardSection = ({ blogs }) => {
                   variant="outline"
                   size="sm"
                   onClick={() => navigate(`/blog/edit/${blog._id}`)}
-                  className="flex-1 border-neutral-200 text-gray-600 hover:bg-neutral-50 hover:text-gray-900"
+                  className="flex-1 border-neutral-200 text-gray-800 hover:bg-neutral-50 hover:text-gray-900"
                 >
                   <Edit3 className="mr-1 h-4 w-4" />
                   Edit

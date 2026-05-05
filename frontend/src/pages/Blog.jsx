@@ -122,7 +122,7 @@ export default function Blog() {
                     />
                   </div>
                   <Button type="submit" className="relative top-2">
-                    <Send className="" />
+                    <Send />
                     <span className="hidden sm:inline">Post</span>
                   </Button>
                 </form>

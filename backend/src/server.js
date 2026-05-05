@@ -1,4 +1,6 @@
-require("dotenv").config();
+require("dotenv").config({
+  path: process.env.NODE_ENV === "production" ? ".env.production" : ".env",
+});
 const express = require("express");
 const cors = require("cors");
 const baseRoute = require("./routes/base.routes");
@@ -17,7 +19,6 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    // only in development
     app.use(
       cors({
         origin: ["http://localhost:5173", "http://localhost:4173"],

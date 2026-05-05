@@ -29,8 +29,8 @@ export default function FeaturesSection() {
     <section className="border-b bg-neutral-100 px-4 py-16">
       <div className="mx-10">
         <div className="mb-12 text-center">
-          <h2 className="text-primary mb-4 flex justify-center text-2xl font-semibold tracking-tight lg:text-4xl">
-            <CircleCheckBig className="mr-3 mt-2" size={26} />
+          <h2 className="text-heading mb-4">
+            <CircleCheckBig className="mt-1 mr-2" size={26} />
             Everything you need to blog
           </h2>
           <p className="text-sm">
@@ -47,11 +47,11 @@ export default function FeaturesSection() {
                 className="border border-gray-400 shadow-sm transition-shadow hover:shadow-xl"
               >
                 <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
-                    <IconComponent className="text-primary h-6 w-6" />
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-lg bg-neutral-100">
+                    <IconComponent className="text-primary h-8 w-8" />
                   </div>
                   <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
                 </CardContent>
               </Card>
             );

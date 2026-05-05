@@ -5,17 +5,14 @@ const healthCheck = async (req, res) => {
   return res.status(200).json({ message: "Blogify API Health check passed 🚀" });
 };
 
-const getAllBlogs = async (req, res) => {
+const getLandingPageBlogs = async (req, res) => {
   try {
     const cachedBlogs = await redis.get("blogs");
     if (cachedBlogs) {
       return res.status(200).json({ blogs: JSON.parse(cachedBlogs) });
     }
 
-    // query the database if not in cache
-    const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3);
-
-    // store in cache with 10 mins expiry
+    const blogs = await Blog.find().sort({ createdAt: -1 }).limit(3).lean();
     await redis.set("blogs", JSON.stringify(blogs), { expiration: { type: "EX", value: 600 } });
 
     return res.status(200).json({ blogs });
@@ -25,4 +22,4 @@ const getAllBlogs = async (req, res) => {
   }
 };
 
-module.exports = { getAllBlogs, healthCheck };
+module.exports = { getLandingPageBlogs, healthCheck };

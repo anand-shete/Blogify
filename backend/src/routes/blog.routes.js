@@ -7,11 +7,11 @@ const {
   editBlogs,
   getBlog,
   improveContent,
-  getAllBlogs,
+  getPaginatedBlogs,
 } = require("../controllers/blog.controller");
 const router = express.Router();
 
-router.get("/", getAllBlogs);
+router.get("/", getPaginatedBlogs);
 router.post("/signed-url", generateSignedUrlForBlogs);
 router.post("/add", addBlog);
 router.post("/improve", improveContent);

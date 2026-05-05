@@ -39,8 +39,8 @@ export default function FAQSection() {
     <section className="bg-white px-4 py-16">
       <div className="mx-6 max-w-4xl lg:mx-auto">
         <div className="mb-12 text-center">
-          <h2 className="text-primary mb-4 flex items-center justify-center tracking-tight text-2xl font-semibold lg:text-4xl">
-            <CircleQuestionMark className="mr-2 scale-110" strokeWidth={1.5} />
+          <h2 className="text-heading mb-4">
+            <CircleQuestionMark className="mr-2" size={30} strokeWidth={1.5} />
             Frequently Asked Questions
           </h2>
         </div>
@@ -48,10 +48,10 @@ export default function FAQSection() {
         <Accordion type="single" collapsible className="w-full">
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left leading-relaxed lg:text-lg">
+              <AccordionTrigger className="text-left text-base leading-relaxed lg:text-lg">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="pl-4 leading-relaxed lg:text-lg">
+              <AccordionContent className="text-sm leading-relaxed text-neutral-800 md:text-base">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

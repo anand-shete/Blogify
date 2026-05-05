@@ -165,13 +165,46 @@ const getBlog = async (req, res) => {
   }
 };
 
-const getAllBlogs = async (req, res) => {
+const getPaginatedBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find({})
-      .sort({ createdAt: 1 })
-      .select("title content coverImageURL")
-      .lean();
-    return res.status(200).json(blogs);
+    const rawPage = req.query?.page;
+    const rawLimit = req.query?.limit;
+
+    const page = Number.parseInt(rawPage ?? "1", 10);
+    const limit = Number.parseInt(rawLimit ?? "6", 10);
+
+    if (!Number.isFinite(page) || page < 1) {
+      return res.status(400).json({ message: "Invalid 'page' query param" });
+    }
+    if (!Number.isFinite(limit) || limit < 1) {
+      return res.status(400).json({ message: "Invalid 'limit' query param" });
+    }
+
+    const safeLimit = Math.min(limit, 100);
+    const skip = (page - 1) * safeLimit;
+
+    const [blogs, totalItems] = await Promise.all([
+      Blog.find({})
+        .sort({ createdAt: -1 })
+        .select("title content coverImageURL")
+        .skip(skip)
+        .limit(safeLimit)
+        .lean(),
+      Blog.countDocuments({}),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / safeLimit) || 0;
+    if (totalPages > 0 && page > totalPages) {
+      return res.status(200).json({
+        blogs: [],
+        meta: { page, limit: safeLimit, totalPages, totalItems },
+      });
+    }
+
+    return res.status(200).json({
+      blogs,
+      meta: { page, limit: safeLimit, totalPages, totalItems },
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error getting blogs" });
@@ -211,6 +244,6 @@ module.exports = {
   editBlogs,
   generateSignedUrlForBlogs,
   getBlog,
-  getAllBlogs,
+  getPaginatedBlogs,
   improveContent,
 };

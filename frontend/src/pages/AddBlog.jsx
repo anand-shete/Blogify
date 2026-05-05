@@ -125,18 +125,14 @@ export default function AddBlog() {
 
   return (
     <div className="m-10 flex min-h-screen flex-col sm:m-20">
-      <Button className="mb-5 w-fit self-end hover:scale-110" onClick={form.handleSubmit(submit)}>
-        <Plus />
-        Post
-      </Button>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(submit)} className="flex flex-col space-y-10">
+        <form onSubmit={form.handleSubmit(submit)} className="mb-20 flex flex-col space-y-10">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1 text-2xl">Title</FormLabel>
+                <FormLabel className="ml-1 text-xl">Title</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Blog Title"
@@ -159,7 +155,7 @@ export default function AddBlog() {
             name="blogCoverImage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="ml-1 text-2xl">
+                <FormLabel className="ml-1 text-xl">
                   Cover Image
                   <p className="mt-2 text-sm text-neutral-600">optional</p>
                 </FormLabel>
@@ -167,16 +163,16 @@ export default function AddBlog() {
                   <Input
                     type="file"
                     onChange={e => field.onChange(e.target.files)}
-                    className="cursor-pointer file:mr-5"
+                    className="cursor-pointer text-neutral-600 file:mr-5 file:text-neutral-700"
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Card>
+          <Card className={"border border-neutral-500"}>
             <CardHeader>
-              <CardTitle className="text-2xl">
+              <CardTitle className="text-xl">
                 <Bot className="text-primary relative top-[-3px] mr-1 inline" size={30} />
                 AI Suggestions
               </CardTitle>
@@ -242,9 +238,9 @@ export default function AddBlog() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="max-w-[20vh] hover:scale-110">
-            <Plus />
+          <Button type="submit" className="max-w-[20vh] hover:scale-110" size="lg">
             Post
+            <Plus />
           </Button>
         </form>
       </Form>

@@ -65,7 +65,6 @@ Create a `.env` file in the `backend` directory and add following variables
 ```bash
 MONGO_URI=your_MONGO_URI
 PORT=3000
-NODE_ENV=development
 JWT_SECRET_KEY=your_JWT_SECRET_KEY
 REDIS_URI=your_REDIS_URI
 FRONTEND_URL=your_FRONTEND_URL

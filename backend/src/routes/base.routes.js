@@ -1,9 +1,9 @@
 const { Router } = require("express");
-const { getAllBlogs, healthCheck } = require("../controllers/base.controller");
+const { getLandingPageBlogs, healthCheck } = require("../controllers/base.controller");
 
 const router = Router();
 
 router.get("/health", healthCheck);
-router.get("/blogs", getAllBlogs);
+router.get("/blogs", getLandingPageBlogs);
 
 module.exports = router;

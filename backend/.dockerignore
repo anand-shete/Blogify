@@ -6,7 +6,6 @@ npm-debug.log
 .gitignore
 .env
 .env.production
-.env.docker
 
 Dockerfile
 

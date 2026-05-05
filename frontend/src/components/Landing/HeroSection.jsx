@@ -9,11 +9,11 @@ export default function HeroSection() {
         revealText={
           <div className="flex flex-col items-center justify-center space-y-10 lg:flex-row lg:space-x-20">
             <div className="text-center">
-              <h1 className="mb-2 text-2xl font-bold text-slate-800 md:text-3xl lg:mb-4 lg:text-4xl">
+              <h1 className="mb-2 text-2xl font-bold text-neutral-800 md:text-3xl lg:mb-4 lg:text-4xl">
                 Share Ideas, Inspire Minds – Welcome to
                 <span className="text-indigo-600"> Blogify!</span>
               </h1>
-              <p className="text-slate-700 lg:text-lg">
+              <p className="text-neutral-700 lg:text-lg">
                 Publish your thoughts, explore inspiring stories, and connect with readers
                 worldwide.
               </p>
