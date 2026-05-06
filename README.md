@@ -1,11 +1,20 @@
 # Blogify
 
-Blogify is a modern, interactive blogging platform designed to allow users to create, share, and engage with blog posts. With a sleek UI, secure authentication, and AI-powered features, Blogify offers a seamless experience for both readers and writers.
+Blogify is a full-stack blogging platform that enables users to create, share, and discover content with a focus on performance, security, and scalable architecture.
 
 ## System Design
 
-Blogify's **current production architecture** uses Amazon Web Services for a full fledged deployment.<br><br>
+Blogify's **current production architecture** uses AWS with a focus on low-latency content delivery and efficient resource utilization.<br><br>
 ![Blogify archirecture](./aws.png)
+
+## High-Level Flow
+
+- Static assets are served via **AWS CloudFront** (CDN) backed by an **S3 bucket**
+- API requests are routed to a backend hosted on **EC2**, behind an **Nginx reverse proxy**
+- **Redis** is used to cache frequently accessed blog data on landing page.
+- **MongoDB Atlas** handles persistent storage
+- Media uploads are handled via **S3 pre-signed URLs**, avoiding backend load
+- **Gemini API** is integrated for AI-assisted content enhancement
 
 ## Live Demo
 
@@ -14,18 +23,20 @@ If you directly want to view this project:
 
 ## Features
 
-- **Fast Content Delivery**: Optimized blog loading using Redis caching and AWS Cloudfront to reduce response times.
-- **AI-Assisted Blog Writing**: Create blogs with a rich text editor enhanced by Gemini Flash for AI-powered writing suggestions.
-- **Multiple Authentication**: Supports both Email-based authentication and Google OAuth 2.0 for login.
-- **Scalable Image Storage**: Blog images stored on AWS S3 using presigned upload URLs for efficient file handling.
-- **API Protection**: Implemented Rate limiting to prevent abuse, prevent excessive requests, and improve backend stability.
+- **Optimized Content Delivery** using Redis caching and CloudFront CDN
+- **AI-Assisted Writing** with Gemini API integration
+- **Authentication** via Email/Password and Google OAuth
+- **Secure Media Uploads** using S3 pre-signed URLs
+- **API Protection** with rate limiting and input sanitization
+- **Pagination** for scalable blog discovery
 
 ## Tech Stack
 
 - **Frontend**: React, Redux, Tailwind, ShadCN
-- **Backend**: Express, JWT, Bcrypt, CORS, Sanitize-HTML, AWS SDK
+- **Backend**: Express, JWT, CORS, Sanitize-HTML, AWS SDK
 - **Database**: MongoDB Atlas
 - **Caching**: Redis
+- **Cloud & Infra**: AWS S3, CloudFront, EC2, Nginx
 - **AI Integration**: `@google/genai`
 
 ## Local Development
@@ -45,7 +56,7 @@ If you directly want to view this project:
 1. Clone the repository
 
 ```bash
-git clone https://github.com/anand-shete/blogify.git
+git clone https://github.com/anand-shete/blogify
 cd blogify
 ```
 
