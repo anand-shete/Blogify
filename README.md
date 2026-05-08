@@ -41,7 +41,7 @@ If you directly want to view this project:
 
 ## Local Development
 
-### Pre-requisite
+### Prerequisites
 
 - Node.js (v20+ recommended)
 - MongoDB setup locally
@@ -51,7 +51,7 @@ If you directly want to view this project:
 - Google OAuth credentials
 - TinyMCE API key
 
-#### Follow the below steps to run project locally
+### Setup
 
 1. Clone the repository
 
@@ -123,35 +123,60 @@ MongoDB connected
 🚀 Server started on http://localhost:3000
 ```
 
-## Containerize backend with Docker
+## Containerize with Docker
 
-1. Copy contens of `.env` into `.env.docker`
+## Prerequisites
 
-```bash
-cd ./backend
-cp .env .env.docker
+- Docker
+- Docker Compose
+
+1. Create a `.env.production` file in backend directory and add your backend production environment variables:
+
+```sh
+PORT=3000
+JWT_SECRET_KEY=your_JWT_SECRET_KEY
+FRONTEND_URL=your_FRONTEND_URL
+
+AWS_ACCESS_KEY_ID=your_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY=your_SECRET_ACCESS_KEY
+BUCKET_NAME=your_BUCKET_NAME
+
+GOOGLE_CLIENT_ID=your_GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET=your_GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT_URI=your_GOOGLE_REDIRECT_URI
+SESSION_KEY=your_SESSION_KEY
+
+GEMINI_API_KEY=your_GEMINI_API_KEY
 ```
 
-2. Replace the `REDIS_URI` inside `.env.docker` with following value
+2. Create a `.env.production` in same directory as `compose.yaml` and paste following variables:
 
-```bash
-REDIS_URI=redis://redis:6379
+```sh
+VITE_API_URI=/api/v1
+VITE_TINYMCE_API_KEY=your_VITE_TINYMCE_API_KEY
 ```
+
+These variables are injected during the frontend Docker build process.
 
 3. Spin up the stack using Docker Compose
 
-```dockerfile
+```sh
 docker compose up --build
 ```
 
-4. Verify
+This command:
 
-Visit `http://localhost:3000/api/v1/health`. You should see
+- builds frontend and backend images
+- starts nginx, backend, MongoDB, and Redis containers
+- creates internal Docker networking automatically
+- reverse proxies request from frontend to backend automatically using Nginx
 
-```json
-{ "message": "Blogify API Health check passed 🚀" }
+4. Verify deployment
+
+Visit
+
+```sh
+http://localhost:4173
 ```
 
----
-
-End of README
+You should see the Blogify frontend running successfully.

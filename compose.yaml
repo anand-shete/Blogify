@@ -16,21 +16,21 @@ services:
       context: ./backend
     env_file:
       - ./backend/.env.production
-      # modify env varibles here
-    MONGO_URI=mongodb://mongo:27017/blogify
-    REDIS_URI=redis://redis:6379
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongo:27017/blogify
+      REDIS_URI: redis://redis:6379
     depends_on:
       - mongo
       - redis
-    ports:
-      - "3000:3000"
     restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
       args:
-        VITE_API_URI: http://localhost:3000/api/v1
+        VITE_API_URI: ${VITE_API_URI}
+        VITE_TINYMCE_API_KEY: ${VITE_TINYMCE_API_KEY}
     depends_on:
       - backend
     ports:
