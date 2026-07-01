@@ -30,6 +30,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.EC2_HOST }}
           REMOTE_USER: ${{ secrets.EC2_USER }}
+          REMOTE_PORT: 4832
           ARGS: "-rlgoDzvc -i"
           SOURCE: "./deploy.zip"
           TARGET: "/home/${{ secrets.EC2_USER }}/blogify_tmp/"
@@ -40,6 +41,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          port: 4832
           script: |
             mkdir -p /home/${{ secrets.EC2_USER }}/blogify
             rm -rf /home/${{ secrets.EC2_USER }}/blogify/*
