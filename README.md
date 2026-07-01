@@ -125,10 +125,12 @@ MongoDB connected
 
 ## Containerize with Docker
 
-## Prerequisites
+### Prerequisites
 
 - Docker
 - Docker Compose
+
+### Setup
 
 1. Create a `.env.production` file in backend directory and add your backend production environment variables:
 

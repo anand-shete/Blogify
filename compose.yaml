@@ -1,6 +1,6 @@
 services:
   mongo:
-    image: mongo:7
+    image: mongo:8
     restart: unless-stopped
     volumes:
       - mongo_data:/data/db
@@ -28,7 +28,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      args:
+      args: # automatically takes from .env adjacent to compose.yaml
         VITE_API_URI: ${VITE_API_URI}
         VITE_TINYMCE_API_KEY: ${VITE_TINYMCE_API_KEY}
     depends_on:

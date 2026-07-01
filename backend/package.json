@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "dev": "NODE_ENV=development nodemon ./src/server.js",
-    "start": "NODE_ENV=production node ./src/server.js"
+    "start": "NODE_ENV=production node ./src/server.js",
+    "format": "prettier --write --ignore-unknown ."
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "express-rate-limit": "^8.4.1",
     "express-session": "^1.18.2",
     "googleapis": "^155.0.1",
+    "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.2",
     "redis": "^5.12.1",

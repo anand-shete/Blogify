@@ -3,6 +3,7 @@ require("dotenv").config({
 });
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const baseRoute = require("./routes/base.routes");
 const userRoute = require("./routes/user.routes");
 const blogRoute = require("./routes/blog.routes");
@@ -31,6 +32,27 @@ const startServer = async () => {
     app.use(express.json({ limit: "10mb" }));
     app.use(cookieParser());
 
+    app.use(
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:"],
+            connectSrc: ["'self'"],
+            upgradeInsecureRequests: [],
+          },
+        },
+        strictTransportSecurity: false,
+        crossOriginResourcePolicy: { policy: "same-origin" },
+        crossOriginOpenerPolicy: { policy: "same-origin" },
+        xContentTypeOptions: true,
+        xPermittedCrossDomainPolicies: true,
+        xFrameOptions: { action: "deny" },
+      }),
+    );
+
     const redisStore = new RedisStore({ client: redis, prefix: "blogify:" });
     app.use(
       session({
@@ -50,6 +72,7 @@ const startServer = async () => {
     app.use("/api/v1", baseRoute);
     app.use("/api/v1/user", userRoute);
     app.use("/api/v1/blog", blogRoute);
+
     app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`));
   } catch (error) {
     console.log("Error starting server", error);
