@@ -25,7 +25,7 @@ const DashboardSection = ({ blogs }) => {
             </div>
 
             <div>
-              <h3 className="line-clamp-2 py-4 text-center text-xl leading-tight font-bold tracking-tight">
+              <h3 className="line-clamp-2 py-4 text-center text-xl leading-tight font-semibold tracking-tight">
                 {blog.title}
               </h3>
               <div className="flex gap-2 px-10">

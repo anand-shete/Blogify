@@ -58,7 +58,7 @@ export default function LandingPageBlogs() {
                 <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/10" />
               </div>
 
-              <h3 className="mt-6 mb-4 line-clamp-2 text-center text-xl leading-tight font-bold tracking-tight">
+              <h3 className="mt-6 mb-4 line-clamp-2 text-center text-xl leading-tight font-semibold tracking-tight">
                 {blog.title}
               </h3>
 
