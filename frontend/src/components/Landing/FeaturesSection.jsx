@@ -21,7 +21,7 @@ export default function FeaturesSection() {
     {
       icon: Sparkles,
       title: "AI-Powered Suggestions",
-      description: "Personalized content suggestions powered by Google Gemini",
+      description: "Smart, personalized content improvements tailored to your writing",
     },
   ];
 

@@ -11,6 +11,10 @@ import { NavLink, useNavigate, useParams } from "react-router";
 import { Label } from "@/components/ui/label";
 import { Send } from "lucide-react";
 import { motion } from "motion/react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
+import { cn } from "@/lib/utils";
 
 export default function Blog() {
   const dispatch = useDispatch();
@@ -59,7 +63,7 @@ export default function Blog() {
           <Loader />
         </div>
       ) : (
-        <div className="mx-auto mt-10 flex w-[80vw] flex-col">
+        <article className="mx-auto mt-10 flex w-[80vw] flex-col">
           <motion.h1
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -71,12 +75,17 @@ export default function Blog() {
           <img
             src={blog.coverImageURL}
             alt="coverImageURL"
-            className="m-10 mx-auto inline-block rounded-md border border-neutral-500 sm:max-w-[30vw]"
+            className={cn(
+              "m-10 mx-auto rounded-md border border-neutral-500 sm:max-w-[30vw]",
+              blog.coverImageURL.split("amazonaws.com")[1] === "/default/blog-image.webp"
+                ? "hidden"
+                : "inline-block",
+            )}
           />
-          <div
-            dangerouslySetInnerHTML={{ __html: blog.content }}
-            className="prose mb-5 max-w-none text-sm text-black"
-          />
+          <div className="prose prose-slate prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:underline prose-img:rounded-lg prose-img:shadow-sm prose-blockquote:border-l-4 max-w-none text-base leading-relaxed text-slate-800">
+            <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{blog.content}</ReactMarkdown>
+          </div>
+
           <div className="mb-5 flex items-center justify-center space-x-5">
             <motion.img
               src={blog.createdBy.profileImageURL}
@@ -157,7 +166,7 @@ export default function Blog() {
               </div>
             ))}
           </div>
-        </div>
+        </article>
       )}
     </div>
   );

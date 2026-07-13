@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
-import { Bot, Check, LoaderCircle } from "lucide-react";
+import { Bot, Check, Copy, LoaderCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useEditBlog from "@/hooks/useEditBlog";
 import { Loader } from "@/components/common";
@@ -38,13 +38,14 @@ const formSchema = z.object({
 
 export default function EditBlog() {
   const navigate = useNavigate();
-  const { blogId } = useParams();
   const user = useSelector(user => user.user);
-  const [generate, setGenerate] = useState("");
   const contentRef = useRef(null);
   const titleRef = useRef(null);
+  const { blogId } = useParams();
+  const [generate, setGenerate] = useState("");
   const [loading, setLoading] = useState(true);
   const [useAI, setUseAI] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -65,6 +66,47 @@ export default function EditBlog() {
       });
     }
   }, [blog.content, blog.title]);
+
+  useEffect(() => {
+    if (!copied) return;
+
+    const timer = setTimeout(() => setCopied(false), 2000);
+
+    return () => clearInterval(timer);
+  }, [copied]);
+
+  const enchance = async () => {
+    if (!contentRef.current.getContent() || !titleRef.current.value) {
+      toast.warning("Both Title and Content are required");
+      return;
+    }
+
+    try {
+      setUseAI(true);
+      const plainText = htmlToText(contentRef.current.getContent(), {
+        wordwrap: false,
+        selectors: [
+          { selector: "a", options: { ignoreHref: true } },
+          { selector: "sup", format: "skip" },
+        ],
+      });
+
+      const res = await api.post("/blog/improve", {
+        content: plainText,
+        title: titleRef.current.value,
+      });
+
+      setGenerate(res.data.content);
+      setUseAI(false);
+    } catch (error) {}
+  };
+
+  const copyText = async () => {
+    if (!generate) return;
+
+    await navigator.clipboard.writeText(generate);
+    setCopied(true);
+  };
 
   const submit = async data => {
     try {
@@ -94,32 +136,6 @@ export default function EditBlog() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const enchance = async () => {
-    if (!contentRef.current.getContent() || !titleRef.current.value) {
-      toast.warning("Both Title and Content are required");
-      return;
-    }
-
-    try {
-      setUseAI(true);
-      const plainText = htmlToText(contentRef.current.getContent(), {
-        wordwrap: false,
-        selectors: [
-          { selector: "a", options: { ignoreHref: true } },
-          { selector: "sup", format: "skip" },
-        ],
-      });
-
-      const res = await api.post("/blog/improve", {
-        content: plainText,
-        title: titleRef.current.value,
-      });
-
-      setGenerate(res.data.content);
-      setUseAI(false);
-    } catch (error) {}
   };
 
   return (
@@ -181,11 +197,21 @@ export default function EditBlog() {
               </span>
               <CardDescription>
                 <Button
-                  className="mt-2 transition-all duration-200 hover:scale-110"
+                  className="mt-2 transition-transform duration-200 hover:scale-110"
                   onClick={enchance}
                   type="button"
                 >
                   Get Suggestions
+                </Button>
+                <Button
+                  disabled={!generate}
+                  className="mt-2 ml-4"
+                  onClick={copyText}
+                  type="button"
+                  variant="outline"
+                >
+                  Copy
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
                 </Button>
               </CardDescription>
             </CardHeader>
@@ -198,7 +224,11 @@ export default function EditBlog() {
                   </p>
                 </div>
               ) : (
-                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{generate}</ReactMarkdown>
+                <div className="prose prose-slate max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                    {generate}
+                  </ReactMarkdown>
+                </div>
               )}
             </CardContent>
           </Card>

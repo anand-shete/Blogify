@@ -2,10 +2,9 @@ const User = require("../models/user.model");
 const Blog = require("../models/blog.model");
 const sanitizeHtml = require("sanitize-html");
 const { putObjectForBlog } = require("../config/aws");
-const { GoogleGenAI } = require("@google/genai");
 const { redis } = require("../config/redis");
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const { IMPROVE_BLOG_PROMPT } = require("../utils/prompt.utils");
+const { groq } = require("../utils/index.utils");
 
 const generateSignedUrlForBlogs = async (req, res) => {
   try {
@@ -113,38 +112,24 @@ const improveContent = async (req, res) => {
       return res.status(400).json({ message: "No content receicved" });
     }
 
-    const prompt = `
-    You are an expert blog editor.
-    Your task is to improve the given blog content.
-
-    Rules:
-    - Fix grammar, clarity, and writing style.
-    - Maintain the original meaning where possible.
-    - If the content is too short, unclear, or low-quality, intelligently expand it into a well-written blog section based on the title.
-    - Do not ask for more input. Always produce a complete improved version.
-    - Do not include explanations, comments, or placeholders.
-    - Output only clean Markdown (NO HTML, NO code blocks).
-
-    Blog Title:${title}
-
-    Blog Content:${content}`;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      config: {
-        temperature: 0.3,
-        topP: 0.9,
-        topK: 40,
-      },
+    const response = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: IMPROVE_BLOG_PROMPT },
+        { role: "user", content: `Blog Title: ${title}\n\nBlog Content:\n${content}` },
+      ],
+      temperature: 0.3,
+      top_p: 0.9,
     });
+
+    const result = response.choices[0]?.message?.content;
 
     return res.status(200).json({
       message: "successful",
-      content: response.text,
+      content: result,
     });
   } catch (error) {
-    console.log("Error improving content", error);
+    console.log(error);
     return res.status(500).json({
       messsage: "Failed to improve text using AI",
     });

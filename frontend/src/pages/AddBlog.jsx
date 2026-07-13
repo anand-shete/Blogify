@@ -25,7 +25,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Editor } from "@tinymce/tinymce-react";
 import { Loader } from "@/components/common";
 import { setUser } from "@/features/userSlice";
-import { Bot, LoaderCircle, Plus } from "lucide-react";
+import { Bot, Check, Copy, LoaderCircle, Plus } from "lucide-react";
+import { turndownService } from "@/utils/turndown.utils";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Blog Title required" }),
@@ -45,6 +46,16 @@ export default function AddBlog() {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const [useAI, setUseAI] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+      blogCoverImage: undefined,
+    },
+  });
 
   useEffect(() => {
     (async () => {
@@ -58,14 +69,19 @@ export default function AddBlog() {
     })();
   }, []);
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      content: "",
-      blogCoverImage: undefined,
-    },
-  });
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 2000);
+    return () => clearInterval(timer);
+  }, [copied]);
+
+  const copyText = async () => {
+    if (!generate) return;
+
+    await navigator.clipboard.writeText(generate);
+    setCopied(true);
+  };
+
   const submit = async data => {
     try {
       setLoading(true);
@@ -187,6 +203,16 @@ export default function AddBlog() {
                 >
                   Get Suggestions
                 </Button>
+                <Button
+                  disabled={!generate}
+                  className="mt-2 ml-4"
+                  onClick={copyText}
+                  type="button"
+                  variant="outline"
+                >
+                  Copy
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
+                </Button>
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -223,8 +249,9 @@ export default function AddBlog() {
                       contentRef.current = editor;
                       setLoading(false);
                     }}
-                    onEditorChange={(newContent, editor) => {
-                      field.onChange(newContent);
+                    onEditorChange={(htmlContent, editor) => {
+                      const cleanMarkdown = turndownService.turndown(htmlContent);
+                      field.onChange(cleanMarkdown);
                     }}
                     init={{
                       plugins:
@@ -232,6 +259,7 @@ export default function AddBlog() {
                       toolbar:
                         "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
                       height: 500,
+                      selector: "textarea",
                     }}
                   />
                 </FormControl>

@@ -1,4 +1,5 @@
 const { google } = require("googleapis");
+const Groq = require("groq-sdk");
 
 const getGoogleOAuthClient = () => {
   return new google.auth.OAuth2(
@@ -8,4 +9,6 @@ const getGoogleOAuthClient = () => {
   );
 };
 
-module.exports = { getGoogleOAuthClient };
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+module.exports = { getGoogleOAuthClient, groq };

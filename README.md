@@ -14,7 +14,7 @@ Blogify's **current production architecture** uses AWS with a focus on low-laten
 - **Redis** is used to cache frequently accessed blog data on landing page.
 - **MongoDB Atlas** handles persistent storage
 - Media uploads are handled via **S3 pre-signed URLs**, avoiding backend load
-- **Gemini API** is integrated for AI-assisted content enhancement
+- **GROQ API** is integrated for AI-assisted content enhancement
 
 ## Live Demo
 
@@ -24,7 +24,7 @@ If you directly want to view this project:
 ## Features
 
 - **Optimized Content Delivery** using Redis caching and CloudFront CDN
-- **AI-Assisted Writing** with Gemini API integration
+- **AI-Assisted Writing** with Groq API integration
 - **Authentication** via Email/Password and Google OAuth
 - **Secure Media Uploads** using S3 pre-signed URLs
 - **API Protection** with rate limiting and input sanitization
@@ -37,7 +37,7 @@ If you directly want to view this project:
 - **Database**: MongoDB Atlas
 - **Caching**: Redis
 - **Cloud & Infra**: AWS S3, CloudFront, EC2, Nginx
-- **AI Integration**: `@google/genai`
+- **AI Integration**: `groq-sdk`
 
 ## Local Development
 
@@ -89,7 +89,7 @@ GOOGLE_CLIENT_SECRET=your_GOOGLE_CLIENT_SECRET
 GOOGLE_REDIRECT_URI=your_GOOGLE_REDIRECT_URI
 SESSION_KEY=your_SESSION_KEY
 
-GEMINI_API_KEY=your_GEMINI_API_KEY
+GROQ_API_KEY=your_GROQ_API_KEY
 ```
 
 Create a .env file in the `frontend` directory with following variables
@@ -148,7 +148,7 @@ GOOGLE_CLIENT_SECRET=your_GOOGLE_CLIENT_SECRET
 GOOGLE_REDIRECT_URI=your_GOOGLE_REDIRECT_URI
 SESSION_KEY=your_SESSION_KEY
 
-GEMINI_API_KEY=your_GEMINI_API_KEY
+GROQ_API_KEY=your_GROQ_API_KEY
 ```
 
 2. Create a `.env.production` in same directory as `compose.yaml` and paste following variables:
